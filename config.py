@@ -19,7 +19,11 @@ theme = config.get_theme_config()
 ######## Main Layout #######
 ######## ########### #######
 
-splitter_size   = [ screen['splitter_size'].get('left', 50), screen['splitter_size'].get('right', 400) ]
+splitter_size            = [ screen['splitter_size'].get('left', 50), screen['splitter_size'].get('right', 400) ]
+assets_path              = screen['assets'].get("path", "./assets")
+icon_path_rocket_lunch   = f"{assets_path}/img/icon/rocket-lunch.png"
+icon_path_folder_tree    = f"{assets_path}/img/icon/folder-tree-2.png"
+icon_path_file_edit      = f"{assets_path}/img/icon/file-edit-2.png"
 
 ######## ########### #######
 ########    Style    #######
