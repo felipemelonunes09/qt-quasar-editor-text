@@ -1,0 +1,10 @@
+screen:
+    width: 1024
+    height: 768
+    splitter_size:
+      left: 50
+      right: 400
+
+style: 
+  pallete-path: "/Users/felipenunes/projects/python-widgets/text-editor/theme/palletes.json"
+  theme: "dark"
