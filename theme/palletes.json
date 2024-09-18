@@ -1,3 +1,6 @@
 {
-    
+    "dark": {
+        "bg-primary-1": "#1E2025",
+        "bg-primary-2": "#29343D"
+    }
 }

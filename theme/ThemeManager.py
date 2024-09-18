@@ -9,11 +9,19 @@ class ThemeManager:
     def apply_theme(self, theme_name: str, window: QWidget):
         theme = self.theme.get(theme_name, {})
         stylesheet = f"""
+        #InitialFrame {{
+                background-color: { theme['bg-primary-1'] };
+            }}
+            
+        #InitialButton QWidget {{
+                background-color: { theme['bg-primary-2'] };
+                font-weight: bold;
+        }}
         
-        QLabel {{
-            background-color: red;
+        #InitialButton:hover {{
+            QWidget {{ background-color:red; }}
         }}
         
         """
-        print(stylesheet)
+        
         window.setStyleSheet(stylesheet)
