@@ -9,7 +9,7 @@ from core.Editor import Editor
 from theme.ThemeManager import ThemeManager
 
 import config
-
+Hello
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -53,7 +53,6 @@ class MainWindow(QWidget):
     def save_file(self, *a, **K):
         content, file = self.__editor_frame.get_current()
         self.__editor.save_file(file, content)
-    
     @Slot()
     def open_file(self, *a, **k):
         file = self.__editor.open_file_dialog() 
@@ -62,10 +61,15 @@ class MainWindow(QWidget):
             self.__attributes_frame.hide()
             self.__editor_frame.show()
             self.__splitter.show()
-            self.__editor_frame.set_file(file)   
+            self.__editor_frame.set_file(file)     
     @Slot()
     def create_file(self, *a, **k):
-        print("creating file")
+        self.__initial_frame.hide()
+        self.__attributes_frame.hide()
+        self.__editor_frame.show()
+        self.__splitter.show()
+        self.__editor_frame.set_blank_file()
+        
     @Slot()
     def open_project(*a, **k):
         print("Opening project")

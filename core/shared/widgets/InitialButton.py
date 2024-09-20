@@ -29,11 +29,10 @@ class InitialButton(QWidget):
     def enterEvent(self, event):
         super().enterEvent(event)
         self.background_label.setStyleSheet("border-top: 5px solid white;")  
-
     def leaveEvent(self, event):
         super().leaveEvent(event)
         self.background_label.setStyleSheet("border-top: 0px;")  
-        
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             if self.signal:

@@ -11,7 +11,9 @@ class Editor():
         file_path, _ = QFileDialog.getOpenFileName(None, "Open File")
         if file_path:
             return File(file_path.split("/")[-1], file_path)
-        
+    
     def save_file(self, file: File, content: str) -> None:
+        if file.get_path() == "invalid-path":
+            file.set_path(QFileDialog.getSaveFileName(None, "Save File")[0])
         file_writer = FileWriter(file=file, content=content)
         file_writer.write()

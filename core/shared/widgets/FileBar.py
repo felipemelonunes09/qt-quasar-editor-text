@@ -10,6 +10,7 @@ class FileBar(QFrame):
         self.setFixedHeight(40)
         self.__list: set[File] = set()
         self.__tabs: dict[QFrame] = dict()
+        self.__list: dict[File] = dict()
         self.__layout = QHBoxLayout(self)
         self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.setSpacing(0)
@@ -22,31 +23,33 @@ class FileBar(QFrame):
         return self.__current_file
         
     def addFile(self, file: File, current=False) -> None:
-        if not file in self.__list:
+        if not id(file) in self.__list:
             tab = self.__create_tab(file)
-            self.__tabs[file] = tab
+            self.__tabs[id(file)] = tab
+            self.__list[id(file)] = file
             self.__layout.addWidget(tab)
-            self.__list.add(file)
             self.__current_file = file if current else None
             tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
 
     def removeFile(self, file: File) -> None:
-        if file in self.__list:
-            self.__tabs[file].deleteLater() 
-            del self.__tabs[file]
-            self.__list.remove(file)
+        if id(file) in self.__list:
+            self.__tabs[id(file)].deleteLater() 
+            self.__list[id(file)] = None
+            del self.__list[id(file)]
+
     
     def set_current_file_edited(self):
         if self.__current_file:
             self.__current_file.set_edited(True)
-            self.__tabs[self.__current_file].setStyleSheet("QLabel { color: lightgreen; }")
+            self.__tabs[id(self.__current_file)].setStyleSheet("QLabel { color: lightgreen; }")
     
     def __on_tab_close(self, file: File):
         self.removeFile(file)
-        if file == self.__current_file:
-            next_file = next(iter(self.__list), None)
+        if id(file) == id(self.__current_file):
+            next_id = next(iter(self.__list), None)
+            next_file = self.__list.get(next_id, None)
             self.closing_current.emit(next_file)
-            self.__current_file = next_file
+            self.__current_file = self.__list.get(next_file)
     
     def __create_tab(self, file: File) -> QFrame:
         tab = QFrame()

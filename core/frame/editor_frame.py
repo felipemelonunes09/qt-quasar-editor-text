@@ -48,6 +48,10 @@ class EditorFrame(QFrame):
         file_loader = FileLoader(file)
         self.text_edit.setPlainText(file_loader.load())
         
+    def set_blank_file(self) -> None:
+        self.filebar.addFile(File("Unknow", "invalid-path"), current=True)
+        self.text_edit.setPlainText("")
+        
     def get_current(self) -> tuple[str, File | None]:
         return self.text_edit.toPlainText(), self.filebar.get_current_file()
     
