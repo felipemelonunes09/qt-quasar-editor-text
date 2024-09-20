@@ -17,6 +17,7 @@ class EditorFrame(QFrame):
         super().__init__(parent)
         self.setObjectName("EditorFrame")
         self.filebar = FileBar(self)
+        self.filebar.closing_current.connect(self.__on_current_close)
         self.text_edit = CustomPlainTextEdit(self)
         self.text_edit.setContentsMargins(0, 0, 0, 0)
         self.text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -28,6 +29,7 @@ class EditorFrame(QFrame):
         layout.addWidget(self.text_edit)
         self.setLayout(layout)
         self.highlight_word("-var")
+
 
     def highlight_word(self, word):
         cursor = self.text_edit.textCursor()
@@ -53,3 +55,11 @@ class EditorFrame(QFrame):
     def __on_text_changed(self, *args, **kwargs):
         #self.highlight_word()
         self.filebar.set_current_file_edited()
+        
+    @Slot(File)
+    def __on_current_close(self, next_file: File | None):
+        if (next_file):
+            file_loader = FileLoader(next_file)
+            self.text_edit.setPlainText(file_loader.load())
+        else:
+            self.text_edit.setPlainText("")

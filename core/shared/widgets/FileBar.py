@@ -3,7 +3,7 @@ from core.file_objects import File
 from PySide6.QtCore import Signal
 
 class FileBar(QFrame):
-    closing_current = Signal()
+    closing_current = Signal(File)
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.setObjectName("FileBar")
@@ -32,7 +32,8 @@ class FileBar(QFrame):
 
     def removeFile(self, file: File) -> None:
         if file in self.__list:
-            self.__layout.removeWidget(self.__tabs[file])
+            self.__tabs[file].deleteLater() 
+            del self.__tabs[file]
             self.__list.remove(file)
     
     def set_current_file_edited(self):
@@ -43,7 +44,9 @@ class FileBar(QFrame):
     def __on_tab_close(self, file: File):
         self.removeFile(file)
         if file == self.__current_file:
-            self.closing_current.emit()
+            next_file = next(iter(self.__list), None)
+            self.closing_current.emit(next_file)
+            self.__current_file = next_file
     
     def __create_tab(self, file: File) -> QFrame:
         tab = QFrame()

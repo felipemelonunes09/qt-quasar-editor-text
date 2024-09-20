@@ -10,6 +10,7 @@ from theme.ThemeManager import ThemeManager
 
 import config
 
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
