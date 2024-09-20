@@ -9,7 +9,6 @@ from core.Editor import Editor
 from theme.ThemeManager import ThemeManager
 
 import config
-Hello
 
 class MainWindow(QWidget):
     def __init__(self):
