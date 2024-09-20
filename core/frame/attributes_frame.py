@@ -3,8 +3,7 @@ from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QLabel, QSizePolicy
 class AttributesFrame(QFrame):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.setObjectName(AttributesFrame.__name__)
-        self.setStyleSheet(f"background-color: red")
+        self.setObjectName("AttributesFrame")
         self.setFrameShape(QFrame.StyledPanel)
         self.setFrameShadow(QFrame.Raised)
         
