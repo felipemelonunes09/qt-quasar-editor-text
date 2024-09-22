@@ -29,7 +29,9 @@ class EditorFrame(QFrame):
         layout.addWidget(self.text_edit)
         self.setLayout(layout)
         self.highlight_word("-var")
-
+        
+    def idle(self):
+        self.text_edit.setDisabled(True)
 
     def highlight_word(self, word):
         cursor = self.text_edit.textCursor()
@@ -44,11 +46,13 @@ class EditorFrame(QFrame):
                 cursor.mergeCharFormat(highlight_format)
                 
     def set_file(self, file: File) -> None:
+        self.text_edit.setDisabled(False)
         self.filebar.addFile(file, current=True)
         file_loader = FileLoader(file)
         self.text_edit.setPlainText(file_loader.load())
         
     def set_blank_file(self) -> None:
+        self.text_edit.setDisabled(False)
         self.filebar.addFile(File("Unknow", None), current=True)
         self.text_edit.setPlainText("")
         

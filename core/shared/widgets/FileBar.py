@@ -36,7 +36,6 @@ class FileBar(QFrame):
             self.__tabs[id(file)].deleteLater() 
             self.__list[id(file)] = None
             del self.__list[id(file)]
-
     
     def set_current_file_edited(self):
         if self.__current_file:

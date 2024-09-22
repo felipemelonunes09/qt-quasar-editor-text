@@ -49,11 +49,12 @@ class MainWindow(QWidget):
         save_shortcut.activated.connect(self.save_file)
         
     @Slot()
-    def save_file(self, *a, **K):
+    def save_file(self, *a, **K) -> None:
         content, file = self.__editor_frame.get_current()
         self.__editor.save_file(file, content)
+        
     @Slot()
-    def open_file(self, *a, **k):
+    def open_file(self, *a, **k) -> None:
         file = self.__editor.open_file_dialog() 
         if(file):
             self.__initial_frame.hide()
@@ -70,13 +71,19 @@ class MainWindow(QWidget):
         self.__editor_frame.set_blank_file()
         
     @Slot()
-    def open_project(*a, **k):
-        print("Opening project")
+    def open_project(self, *a, **k):
+        dir_path = self.__editor.open_dir_dialog()
+        self.__initial_frame.hide()
+        self.__attributes_frame.show()
+        self.__editor_frame.show()
+        self.__editor_frame.idle()
+        self.__splitter.show()
+        self.__attributes_frame.set_working_dir(dir_path)
 
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("Exemplo de Frame no Qt")
+    window.setWindowTitle("<-> Quasar <->")
     window.resize(1024, 768)
     window.show()
     sys.exit(app.exec())
