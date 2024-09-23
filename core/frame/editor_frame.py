@@ -48,13 +48,13 @@ class EditorFrame(QFrame):
                 
     def set_file(self, file: File) -> None:
         self.text_edit.setDisabled(False)
-        self.filebar.addFile(file, current=True)
+        self.filebar.add_file(file, current=True)
         file_loader = FileLoader(file)
         self.text_edit.setPlainText(file_loader.load())
         
     def set_blank_file(self) -> None:
         self.text_edit.setDisabled(False)
-        self.filebar.addFile(File("Unknow", None), current=True)
+        self.filebar.add_file(File("Unknow", None), current=True)
         self.text_edit.setPlainText("")
         
     def get_current(self) -> tuple[str, File | None]:

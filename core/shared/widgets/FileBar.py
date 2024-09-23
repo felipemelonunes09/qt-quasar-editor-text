@@ -24,7 +24,7 @@ class FileBar(QFrame):
     def get_current_file(self) -> File:
         return self.__current_file
         
-    def addFile(self, file: File, current=False) -> None:
+    def add_file(self, file: File, current=False) -> None:
         if not file.get_path() in self.__list: 
             self.__remove_current_from_all()
             tab = self.__create_tab(file)
@@ -38,7 +38,7 @@ class FileBar(QFrame):
             if current and file:
                 self.__current_file = file
             
-    def removeFile(self, file: File) -> None:
+    def remove_file(self, file: File) -> None:
         if file.get_path() in self.__list:
             self.__tabs[id(file)].deleteLater() 
             del self.__tabs[id(file)]
@@ -55,7 +55,7 @@ class FileBar(QFrame):
             self.__tabs[tab_id].set_disable()
     
     def __on_tab_close(self, file: File):
-        self.removeFile(file)
+        self.remove_file(file)
         if self.__current_file:
             if file.get_path() == self.__current_file.get_path():
                 next_id = next(iter(self.__list), None)
