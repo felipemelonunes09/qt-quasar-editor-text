@@ -65,8 +65,12 @@ class FileBar(QFrame):
                 self.__current_file = self.__list.get(next_file)
         else:
             self.closing_current.emit(None)
+            
+    def __on_tab_click(self, file: File):
+        self.tab_click.emit(file)
+        self.__remove_current_from_all()
     
     def __create_tab(self, file: File) -> QFrame:
-        tab = FileTab(self, file, clickcallback=self.tab_click.emit)
+        tab = FileTab(self, file, clickcallback=self.__on_tab_click)
         tab.x_button.clicked.connect(lambda: self.__on_tab_close(file))
         return tab

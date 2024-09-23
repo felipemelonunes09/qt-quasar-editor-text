@@ -29,6 +29,9 @@ class ThemeManager:
                 padding-left: 15px;
                 padding-right: 15px;
             }}
+            #FileTab QLabel {{
+                color: red;
+            }}
             #CurrentFileTab {{
                 background-color: { theme['bg-primary-1'] };
                 border-top: 4px solid #334EAC;

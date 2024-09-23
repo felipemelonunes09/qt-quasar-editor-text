@@ -18,4 +18,6 @@ class FileTab(QFrame):
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             self.__clickcallback(self.__file)
+            self.setObjectName("CurrentFileTab")
+            self.style().polish(self)
         return super().mousePressEvent(event)
