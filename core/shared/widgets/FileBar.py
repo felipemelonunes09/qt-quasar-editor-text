@@ -24,23 +24,30 @@ class FileBar(QFrame):
         
     def addFile(self, file: File, current=False) -> None:
         if not id(file) in self.__list:
+            
+            self.__remove_current_from_all()
             tab = self.__create_tab(file)
             self.__tabs[id(file)] = tab
             self.__list[id(file)] = file
             self.__layout.addWidget(tab)
             self.__current_file = file if current else None
-            tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
+            #tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
 
     def removeFile(self, file: File) -> None:
         if id(file) in self.__list:
             self.__tabs[id(file)].deleteLater() 
             self.__list[id(file)] = None
+            del self.__tabs[id(file)]
             del self.__list[id(file)]
     
     def set_current_file_edited(self):
         if self.__current_file:
             self.__current_file.set_edited(True)
             self.__tabs[id(self.__current_file)].setStyleSheet("QLabel { color: lightgreen; }")
+    
+    def __remove_current_from_all(self):
+        for tab_id in self.__tabs:
+            self.__tabs[tab_id].setObjectName("CurrentFileTab")
     
     def __on_tab_close(self, file: File):
         self.removeFile(file)
