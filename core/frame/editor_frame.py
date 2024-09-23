@@ -18,6 +18,7 @@ class EditorFrame(QFrame):
         self.setObjectName("EditorFrame")
         self.filebar = FileBar(self)
         self.filebar.closing_current.connect(self.__on_current_close)
+        self.filebar.tab_click.connect(self.__on_tab_change)
         self.text_edit = CustomPlainTextEdit(self)
         self.text_edit.setContentsMargins(0, 0, 0, 0)
         self.text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -71,3 +72,7 @@ class EditorFrame(QFrame):
             self.text_edit.setPlainText(file_loader.load())
         else:
             self.text_edit.setPlainText("")
+            
+    @Slot(File)
+    def __on_tab_change(self, file):
+        self.set_file(file)

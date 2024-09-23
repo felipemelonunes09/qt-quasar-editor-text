@@ -57,16 +57,16 @@ class FileBar(QFrame):
     
     def __on_tab_close(self, file: File):
         self.removeFile(file)
-        if file.get_path() == self.__current_file.get_path():
-            next_id = next(iter(self.__list), None)
-            next_file = self.__list.get(next_id, None)
-            self.closing_current.emit(next_file)
-            self.__current_file = self.__list.get(next_file)
-            
-    def __on_tab_click(self):
-        self.tab_click.emit()
+        if self.__current_file:
+            if file.get_path() == self.__current_file.get_path():
+                next_id = next(iter(self.__list), None)
+                next_file = self.__list.get(next_id, None)
+                self.closing_current.emit(next_file)
+                self.__current_file = self.__list.get(next_file)
+        else:
+            self.closing_current.emit(None)
     
     def __create_tab(self, file: File) -> QFrame:
-        tab = FileTab(self, file.get_name())
+        tab = FileTab(self, file, clickcallback=self.tab_click.emit)
         tab.x_button.clicked.connect(lambda: self.__on_tab_close(file))
         return tab
