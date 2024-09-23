@@ -1,7 +1,7 @@
 import os
 import config
 from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QLabel, QWidget, QVBoxLayout, QLabel
-from PySide6.QtCore import QDir
+from PySide6.QtCore import QDir, Qt
 from PySide6.QtGui import QIcon
 
 class FileBrowserWidget(QWidget):
@@ -32,13 +32,14 @@ class FileBrowserWidget(QWidget):
                 dummy_child.setText(0, '')
                 item.addChild(dummy_child)
             else:
+                item.setData(0, Qt.UserRole, (path, entry.fileName()))
                 item.setIcon(0, file_icon)
 
     def expand_directory(self, item):
         if item.childCount() == 1 and item.child(0).text(0) == '':
             item.takeChildren()
             parent_path = self.get_item_path(item)
-            self.populate_tree(self.__current_path, item)
+            self.populate_tree(parent_path, item)
 
     def get_item_path(self, item):
         path = []

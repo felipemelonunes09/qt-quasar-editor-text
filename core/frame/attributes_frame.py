@@ -1,9 +1,13 @@
 
 from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout
 from core.shared.widgets.FileBrowser import FileBrowserWidget
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot, Qt, Signal
+from core.file_objects import File
+import os
+
 
 class AttributesFrame(QFrame):
+    load_file = Signal(File)
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setObjectName("AttributesFrame")
@@ -22,5 +26,10 @@ class AttributesFrame(QFrame):
         self.file_browser.set_current_path(path)
         
     @Slot()
-    def atrribute_cliked(self) -> None:
-        print("cliked")
+    def atrribute_cliked(self, item) -> None:
+        data = item.data(0, Qt.UserRole)
+        if data:
+            path, filename = data
+            path = os.path.join(path, filename)
+            file = File(filename, path)
+            self.load_file.emit(file)

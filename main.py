@@ -34,17 +34,15 @@ class MainWindow(QWidget):
     
     def setup_initial(self):
         self.__editor_frame.setContentsMargins(0, 0, 0, 0)
+        self.__attributes_frame.load_file.connect(self.__editor_frame.set_file)
         self.__splitter.setContentsMargins(0, 0, 0, 0)
         self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.setSpacing(0)
-        self.__editor
-        
         self.__initial_frame.open_file.connect(self.open_file)
         self.__initial_frame.open_project.connect(self.open_project)
         self.__initial_frame.create_file.connect(self.create_file)
         self.__theme_manager.apply_theme(config.theme, self)
         self.__splitter.hide()
-        
         save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         save_shortcut.activated.connect(self.save_file)
         
