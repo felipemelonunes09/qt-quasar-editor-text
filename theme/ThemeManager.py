@@ -52,5 +52,9 @@ class ThemeManager:
             #FileTab:hover {{
                 background-color: { theme["bg-secondary-2"] }; 
             }}
+            QTreeWidget {{
+                background-color: { theme['bg-primary-2'] };
+                border: none;
+            }}
         """
         window.setStyleSheet(stylesheet)
