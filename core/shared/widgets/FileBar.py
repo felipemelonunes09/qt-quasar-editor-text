@@ -11,7 +11,7 @@ class FileBar(QFrame):
         super().__init__(parent)
         self.setObjectName("FileBar")
         self.setFixedHeight(40)
-        self.__tabs: dict[int, QFrame] = dict()
+        self.__tabs: dict[int, FileTab] = dict()
         self.__list: dict[str, File] = dict()
         self.__layout = QHBoxLayout(self)
         self.__layout.setContentsMargins(0, 0, 0, 0)
@@ -32,7 +32,7 @@ class FileBar(QFrame):
             self.__layout.addWidget(tab)
             self.__list[file.get_path()] = file
             self.__current_file = file if current else None
-            tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
+            tab.set_active() if current else tab.set_disable()
         else:
             file = self.__list.get(file.get_path(), None)
             if current and file:
@@ -48,12 +48,11 @@ class FileBar(QFrame):
     def set_current_file_edited(self):
         if self.__current_file:
             self.__current_file.set_edited(True)
-            self.__tabs[id(self.__current_file)].setStyleSheet("QLabel { color: lightgreen; }")
+            self.__tabs[id(self.__current_file)].set_edited()
     
     def __remove_current_from_all(self):
         for tab_id in self.__tabs:
-            self.__tabs[tab_id].setObjectName("FileTab")
-            self.__tabs[tab_id].style().polish(self.__tabs[tab_id])
+            self.__tabs[tab_id].set_disable()
     
     def __on_tab_close(self, file: File):
         self.removeFile(file)
@@ -70,7 +69,7 @@ class FileBar(QFrame):
         self.tab_click.emit(file)
         self.__remove_current_from_all()
     
-    def __create_tab(self, file: File) -> QFrame:
+    def __create_tab(self, file: File) -> FileTab:
         tab = FileTab(self, file, clickcallback=self.__on_tab_click)
         tab.x_button.clicked.connect(lambda: self.__on_tab_close(file))
         return tab

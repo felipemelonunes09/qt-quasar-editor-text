@@ -18,6 +18,22 @@ class FileTab(QFrame):
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             self.__clickcallback(self.__file)
-            self.setObjectName("CurrentFileTab")
+            self.set_active()
             self.style().polish(self)
         return super().mousePressEvent(event)
+    
+    def set_active(self) -> None:
+        self.setObjectName("CurrentFileTab")
+        self.label.setStyleSheet("color: white;")
+        self.style().polish(self)
+    
+    def set_disable(self) -> None:
+        self.setObjectName("FileTab")
+        self.label.setStyleSheet("color: gray;")
+        self.style().polish(self)
+    
+    def set_edited(self) -> None:
+        self.label.setStyleSheet("color: lightgreen")
+        
+    def set_saved(self) -> None:
+        self.label.setStyleSheet("color: white")

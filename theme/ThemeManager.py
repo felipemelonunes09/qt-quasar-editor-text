@@ -29,7 +29,7 @@ class ThemeManager:
                 padding-left: 15px;
                 padding-right: 15px;
             }}
-            #FileTab QLabel {{
+            #FileTabLabel QLabel {{
                 color: red;
             }}
             #CurrentFileTab {{
