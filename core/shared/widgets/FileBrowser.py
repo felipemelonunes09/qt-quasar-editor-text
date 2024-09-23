@@ -1,6 +1,6 @@
 import os
 import config
-from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem, QLabel, QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QLabel, QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QDir
 from PySide6.QtGui import QIcon
 
@@ -9,9 +9,10 @@ class FileBrowserWidget(QWidget):
         super().__init__()
 
         self.layout = QVBoxLayout(self)
-        self.path_label = QLabel(path if path else os.getcwd())
+        self.path_label = QLabel((path if path else os.getcwd()).split("/")[-1])
         self.file_tree = QTreeWidget()
         self.file_tree.setHeaderHidden(True)  
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.layout.addWidget(self.path_label)
         self.layout.addWidget(self.file_tree)
         self.file_tree.itemExpanded.connect(self.expand_directory)
