@@ -1,16 +1,18 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QFrame, QSizePolicy
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QFrame
+from core.shared.widgets.FileTab import FileTab
 from core.file_objects import File
 from PySide6.QtCore import Signal
 
+
 class FileBar(QFrame):
     closing_current = Signal(File)
+    tab_click = Signal(File)
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.setObjectName("FileBar")
         self.setFixedHeight(40)
-        self.__list: set[File] = set()
-        self.__tabs: dict[QFrame] = dict()
-        self.__list: dict[File] = dict()
+        self.__tabs: dict[int, QFrame] = dict()
+        self.__list: dict[str, File] = dict()
         self.__layout = QHBoxLayout(self)
         self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.setSpacing(0)
@@ -23,22 +25,25 @@ class FileBar(QFrame):
         return self.__current_file
         
     def addFile(self, file: File, current=False) -> None:
-        if not id(file) in self.__list:
-            
+        if not file.get_path() in self.__list: 
             self.__remove_current_from_all()
             tab = self.__create_tab(file)
             self.__tabs[id(file)] = tab
-            self.__list[id(file)] = file
             self.__layout.addWidget(tab)
+            self.__list[file.get_path()] = file
             self.__current_file = file if current else None
-            #tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
-
+            tab.setObjectName("CurrentFileTab") if current else tab.setObjectName("FileTab")
+        else:
+            file = self.__list.get(file.get_path(), None)
+            if current and file:
+                self.__current_file = file
+            
     def removeFile(self, file: File) -> None:
-        if id(file) in self.__list:
+        if file.get_path() in self.__list:
             self.__tabs[id(file)].deleteLater() 
-            self.__list[id(file)] = None
             del self.__tabs[id(file)]
-            del self.__list[id(file)]
+            self.__list[file.get_path()] = None
+            del self.__list[file.get_path()]
     
     def set_current_file_edited(self):
         if self.__current_file:
@@ -47,23 +52,21 @@ class FileBar(QFrame):
     
     def __remove_current_from_all(self):
         for tab_id in self.__tabs:
-            self.__tabs[tab_id].setObjectName("CurrentFileTab")
+            self.__tabs[tab_id].setObjectName("FileTab")
+            self.__tabs[tab_id].style().polish(self.__tabs[tab_id])
     
     def __on_tab_close(self, file: File):
         self.removeFile(file)
-        if id(file) == id(self.__current_file):
+        if file.get_path() == self.__current_file.get_path():
             next_id = next(iter(self.__list), None)
             next_file = self.__list.get(next_id, None)
             self.closing_current.emit(next_file)
             self.__current_file = self.__list.get(next_file)
+            
+    def __on_tab_click(self):
+        self.tab_click.emit()
     
     def __create_tab(self, file: File) -> QFrame:
-        tab = QFrame()
-        tab_layout = QHBoxLayout()
-        label = QLabel(file.get_name())
-        x_button = QPushButton("X")
-        x_button.clicked.connect(lambda: self.__on_tab_close(file))
-        tab_layout.addWidget(label)
-        tab_layout.addWidget(x_button)
-        tab.setLayout(tab_layout)
+        tab = FileTab(self, file.get_name())
+        tab.x_button.clicked.connect(lambda: self.__on_tab_close(file))
         return tab
