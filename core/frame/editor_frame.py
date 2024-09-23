@@ -60,6 +60,7 @@ class EditorFrame(QFrame):
     def get_current(self) -> tuple[str, File | None]:
         return self.text_edit.toPlainText(), self.filebar.get_current_file()
     
+    
     @Slot()
     def __on_text_changed(self, *args, **kwargs):
         #self.highlight_word()

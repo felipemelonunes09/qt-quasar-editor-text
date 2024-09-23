@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QFrame
 from core.shared.widgets.FileTab import FileTab
 from core.file_objects import File
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Slot
 
 
 class FileBar(QFrame):
@@ -11,7 +11,7 @@ class FileBar(QFrame):
         super().__init__(parent)
         self.setObjectName("FileBar")
         self.setFixedHeight(40)
-        self.__tabs: dict[int, FileTab] = dict()
+        self.__tabs: dict[str, FileTab] = dict()
         self.__list: dict[str, File] = dict()
         self.__layout = QHBoxLayout(self)
         self.__layout.setContentsMargins(0, 0, 0, 0)
@@ -28,9 +28,9 @@ class FileBar(QFrame):
         if not file.get_path() in self.__list: 
             self.__remove_current_from_all()
             tab = self.__create_tab(file)
-            self.__tabs[id(file)] = tab
-            self.__layout.addWidget(tab)
+            self.__tabs[file.get_path()] = tab
             self.__list[file.get_path()] = file
+            self.__layout.addWidget(tab)
             self.__current_file = file if current else None
             tab.set_active() if current else tab.set_disable()
         else:
@@ -40,15 +40,21 @@ class FileBar(QFrame):
             
     def remove_file(self, file: File) -> None:
         if file.get_path() in self.__list:
-            self.__tabs[id(file)].deleteLater() 
-            del self.__tabs[id(file)]
+            self.__tabs[file.get_path()].deleteLater() 
             self.__list[file.get_path()] = None
+            del self.__tabs[file.get_path()]
             del self.__list[file.get_path()]
     
     def set_current_file_edited(self):
         if self.__current_file:
             self.__current_file.set_edited(True)
-            self.__tabs[id(self.__current_file)].set_edited()
+            self.__tabs[self.__current_file.get_path()].set_edited()
+    
+    @Slot(File)
+    def on_file_saved(self, file: File):
+        file = self.__list.get(file.get_path(), None)
+        if file:
+            pass
     
     def __remove_current_from_all(self):
         for tab_id in self.__tabs:

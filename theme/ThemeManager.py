@@ -34,7 +34,7 @@ class ThemeManager:
             }}
             #CurrentFileTab {{
                 background-color: { theme['bg-primary-1'] };
-                border-top: 4px solid #334EAC;
+                border-top: 2px solid #334EAC;
                 border-left: 1px solid { theme["bg-secondary-1"] }; 
                 border-right: 1px solide { theme["bg-secondary-1"] };  
             }}
