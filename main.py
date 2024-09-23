@@ -7,12 +7,13 @@ from core.frame.attributes_frame import AttributesFrame
 from core.frame.initial_frame import InitialFrame
 from theme.ThemeManager import ThemeManager
 from core.Editor import Editor
+from core.file_objects import File
 
 import config
 
 class MainWindow(QWidget):
     
-    file_saved = Signal()
+    file_saved = Signal(File)
     
     def __init__(self):
         super().__init__()
