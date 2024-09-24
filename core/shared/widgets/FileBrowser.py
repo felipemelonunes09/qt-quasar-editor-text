@@ -12,11 +12,11 @@ class FileBrowserWidget(QWidget):
         self.path_label = QLabel((path if path else os.getcwd()).split("/")[-1])
         self.file_tree = QTreeWidget()
         self.file_tree.setHeaderHidden(True)  
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.layout.addWidget(self.path_label)
         self.layout.addWidget(self.file_tree)
         self.file_tree.itemExpanded.connect(self.expand_directory)
         self.__current_path: str = None
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
     def populate_tree(self, path, parent):
         directory_icon = QIcon(config.icon_path_folder_open)

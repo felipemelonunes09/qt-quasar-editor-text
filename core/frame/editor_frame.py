@@ -3,14 +3,17 @@ from PySide6.QtGui import QTextCursor, QTextCharFormat, QBrush, QColor
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
-from PySide6.QtCore import Signal, Slot
+from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 
 class CustomPlainTextEdit(QPlainTextEdit):
     keyPressed = Signal() 
     def keyPressEvent(self, event: QKeyEvent):
         self.keyPressed.emit()
-        super().keyPressEvent(event)
+        if event.key() == Qt.Key_Tab:
+            self.insertPlainText(' '*4)
+        else:
+            super().keyPressEvent(event)
 
 class EditorFrame(QFrame):
     def __init__(self, parent=None):
