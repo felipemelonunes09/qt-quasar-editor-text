@@ -9,6 +9,7 @@ from theme.ThemeManager import ThemeManager
 from core.Editor import Editor
 from core.file_objects import File
 from core.MenuManager import MenuManager
+from core.frame.area_editor_frame import AreaEditorFrame
     
 import config
 
@@ -36,35 +37,28 @@ class MainWindow(QMainWindow):
         self.__layout.setSpacing(0)
         self.__layout.addWidget(self.__splitter)
         self.__layout.addWidget(self.__initial_frame)
-        self.__initial_frame.open_file.connect(self.open_file)
-        self.__initial_frame.open_project.connect(self.open_project)
-        self.__initial_frame.create_file.connect(self.create_file)
+        self.__initial_frame.open_file.connect(self.__open_file)
+        self.__initial_frame.open_project.connect(self.__open_project)
+        self.__initial_frame.create_file.connect(self.__create_file)
         self.__theme_manager.apply_theme(config.theme, self)
         self.__splitter.addWidget(self.__attributes_frame)
         self.__splitter.addWidget(self.__current_editor)
         self.__splitter.setSizes(config.splitter_size)
         self.__splitter.hide()
         self.__save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
-        self.__save_shortcut.activated.connect(self.save_file)
+        self.__save_shortcut.activated.connect(self.__save_file)
         self.__menu.split.connect(self.__split_editor)
         self.file_saved.connect(self.__current_editor.filebar.on_file_saved)
         self.setCentralWidget(self.__central_widget)
         
-    def __split_editor(self) -> None:
-        if not self.__splitter.isHidden():
-            new_editor = EditorFrame(self)
-            self.__editor_frames.append(new_editor)
-            self.__current_editor = new_editor
-            self.__splitter.addWidget(new_editor)
-        
     @Slot()
-    def save_file(self, *a, **K) -> None:
+    def __save_file(self, *a, **K) -> None:
         content, file = self.__current_editor.get_current()
         self.__editor.save_file(file, content)
         self.file_saved.emit(file)
         
     @Slot()
-    def open_file(self, *a, **k) -> None:
+    def __open_file(self, *a, **k) -> None:
         file = self.__editor.open_file_dialog() 
         if file:
             self.__initial_frame.hide()
@@ -74,7 +68,7 @@ class MainWindow(QMainWindow):
             self.__current_editor.set_file(file)     
             
     @Slot()
-    def create_file(self, *a, **k) -> None:
+    def __create_file(self, *a, **k) -> None:
         self.__initial_frame.hide()
         self.__attributes_frame.hide()
         self.__current_editor.show()
@@ -82,7 +76,7 @@ class MainWindow(QMainWindow):
         self.__current_editor.set_blank_file()
         
     @Slot()
-    def open_project(self, *a, **k) -> None:
+    def __open_project(self, *a, **k) -> None:
         dir_path = self.__editor.open_dir_dialog()
         self.__initial_frame.hide()
         self.__attributes_frame.show()
@@ -90,8 +84,25 @@ class MainWindow(QMainWindow):
         self.__current_editor.idle()
         self.__splitter.show()
         self.__attributes_frame.set_working_dir(dir_path)
-
-
+        
+    @Slot(EditorFrame)
+    def __on_editor_change(self, editor: EditorFrame):
+        print("changed")
+        self.__current_editor = editor
+        
+    def __split_editor(self) -> None:
+        if not self.__splitter.isHidden():
+            new_editor = self.__create_editor()
+            self.__editor_frames.append(new_editor)
+            self.__current_editor = new_editor
+            self.__splitter.addWidget(new_editor)
+    
+    def __create_editor(self) -> EditorFrame:
+        new_editor = EditorFrame(self)
+        new_editor.setContentsMargins(0,0,0,0)
+        new_editor.clicked.connect(self.__on_editor_change)   
+        return new_editor     
+    
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()

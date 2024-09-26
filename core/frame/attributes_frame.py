@@ -13,7 +13,6 @@ class AttributesFrame(QFrame):
         self.setObjectName("AttributesFrame")
         self.setFrameShape(QFrame.StyledPanel)
         self.setFrameShadow(QFrame.Raised)
-        
         self.frame_layout = QVBoxLayout(self)
         self.frame_layout.setContentsMargins(0, 0, 0, 0)
         self.frame_layout.setSpacing(0)

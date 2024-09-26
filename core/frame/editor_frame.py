@@ -16,6 +16,9 @@ class CustomPlainTextEdit(QPlainTextEdit):
             super().keyPressEvent(event)
 
 class EditorFrame(QFrame):
+    
+    clicked = Signal(QFrame)
+    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("EditorFrame")
@@ -63,6 +66,10 @@ class EditorFrame(QFrame):
     def get_current(self) -> tuple[str, File | None]:
         return self.text_edit.toPlainText(), self.filebar.get_current_file()
     
+    def mousePressEvent(self, event) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self)
+        return super().mousePressEvent(event)
     
     @Slot()
     def __on_text_changed(self, *args, **kwargs):
