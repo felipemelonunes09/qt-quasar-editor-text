@@ -53,9 +53,10 @@ class FileBar(QFrame):
     @Slot(File)
     def on_file_saved(self, file: File):
         file = self.__list.get(file.get_path(), None)
-        tab = self.__tabs.get(file.get_path(), None)
-        if tab:
-            tab.set_saved()
+        if file:
+            tab = self.__tabs.get(file.get_path(), None)
+            if tab:
+                tab.set_saved()
     
     def __remove_current_from_all(self):
         for tab_id in self.__tabs:

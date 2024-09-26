@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QFrame, QPlainTextEdit, QVBoxLayout, QSizePolicy
-from PySide6.QtGui import QTextCursor, QTextCharFormat, QBrush, QColor
+from PySide6.QtGui import QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
@@ -7,13 +7,17 @@ from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 
 class CustomPlainTextEdit(QPlainTextEdit):
-    keyPressed = Signal() 
+    key_pressed = Signal() 
+    cliked = Signal()
     def keyPressEvent(self, event: QKeyEvent):
-        self.keyPressed.emit()
         if event.key() == Qt.Key_Tab:
             self.insertPlainText(' '*4)
         else:
             super().keyPressEvent(event)
+            
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        self.cliked.emit()
+        return super().mousePressEvent(e)
 
 class EditorFrame(QFrame):
     
@@ -23,12 +27,15 @@ class EditorFrame(QFrame):
         super().__init__(parent)
         self.setObjectName("EditorFrame")
         self.filebar = FileBar(self)
+        #self.filebar.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.filebar.closing_current.connect(self.__on_current_close)
         self.filebar.tab_click.connect(self.__on_tab_change)
         self.text_edit = CustomPlainTextEdit(self)
+        #self.text_edit.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.text_edit.setContentsMargins(0, 0, 0, 0)
         self.text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.text_edit.keyPressed.connect(self.__on_text_changed)
+        self.text_edit.key_pressed.connect(self.__on_text_changed)
+        self.text_edit.cliked.connect(lambda: self.clicked.emit(self))
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)  
         layout.setSpacing(0) 
@@ -67,8 +74,7 @@ class EditorFrame(QFrame):
         return self.text_edit.toPlainText(), self.filebar.get_current_file()
     
     def mousePressEvent(self, event) -> None:
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit(self)
+        self.clicked.emit(self)
         return super().mousePressEvent(event)
     
     @Slot()
