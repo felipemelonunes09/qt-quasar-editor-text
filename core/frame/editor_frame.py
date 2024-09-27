@@ -10,10 +10,10 @@ class CustomPlainTextEdit(QPlainTextEdit):
     key_pressed = Signal() 
     cliked = Signal()
     def keyPressEvent(self, event: QKeyEvent):
+        self.key_pressed.emit()
         if event.key() == Qt.Key_Tab:
             self.insertPlainText(' '*4)
-        else:
-            super().keyPressEvent(event)
+        super().keyPressEvent(event)
             
     def mousePressEvent(self, e: QMouseEvent) -> None:
         self.cliked.emit()

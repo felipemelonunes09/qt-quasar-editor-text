@@ -1,4 +1,6 @@
 import sys
+import config
+
 from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QApplication, QVBoxLayout, QSplitter, QWidget, QMainWindow
 from PySide6.QtGui import QShortcut, QKeySequence
@@ -9,9 +11,7 @@ from theme.ThemeManager import ThemeManager
 from core.Editor import Editor
 from core.file_objects import File
 from core.MenuManager import MenuManager
-from core.frame.area_editor_frame import AreaEditorFrame
-    
-import config
+from core.frame.area_editor_frame import AreaEditorFrame    
 
 class MainWindow(QMainWindow): 
     file_saved = Signal(File)
@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.__splitter.hide()
         self.__save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         self.__save_shortcut.activated.connect(self.__save_file)
-        self.__menu.split.connect(self.__split_editor)
+        #self.__menu.split.connect(self.__split_editor)
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
         self.__editor_area.teste()
@@ -86,7 +86,6 @@ class MainWindow(QMainWindow):
         self.__editor_area.get_current_editor().idle()
         self.__attributes_frame.set_working_dir(dir_path)
         self.__splitter.show()
-
 
 def main():
     app = QApplication(sys.argv)

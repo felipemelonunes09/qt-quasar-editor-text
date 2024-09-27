@@ -46,6 +46,7 @@ class FileBar(QFrame):
             del self.__list[file.get_path()]
     
     def set_current_file_edited(self):
+        print("file was edited")
         if self.__current_file:
             self.__current_file.set_edited(True)
             self.__tabs[self.__current_file.get_path()].set_edited()
