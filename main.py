@@ -86,24 +86,8 @@ class MainWindow(QMainWindow):
         self.__editor_area.get_current_editor().idle()
         self.__attributes_frame.set_working_dir(dir_path)
         self.__splitter.show()
-        
-    @Slot(EditorFrame)
-    def __on_editor_change(self, editor: EditorFrame):
-        self.__current_editor = editor
-        
-    def __split_editor(self) -> None:
-        if not self.__splitter.isHidden():
-            new_editor = self.__create_editor()
-            #self.__editor_frames.append(new_editor)
-            #self.__current_editor = new_editor
-            self.__splitter.addWidget(new_editor)
-    
-    def __create_editor(self) -> EditorFrame:
-        new_editor = EditorFrame(self)
-        new_editor.setContentsMargins(0,0,0,0)
-        new_editor.clicked.connect(self.__on_editor_change)   
-        return new_editor     
-    
+
+
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()

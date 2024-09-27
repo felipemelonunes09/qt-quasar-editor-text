@@ -10,7 +10,6 @@ class InitialFrame(QFrame):
     open_project    = Signal()
     create_file     = Signal()
     
-    
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setObjectName("InitialFrame")
