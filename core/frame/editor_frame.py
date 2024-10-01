@@ -20,9 +20,7 @@ class CustomPlainTextEdit(QPlainTextEdit):
         return super().mousePressEvent(e)
 
 class EditorFrame(QFrame):
-    
     clicked = Signal(QFrame)
-    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("EditorFrame")

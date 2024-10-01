@@ -27,7 +27,6 @@ class MainWindow(QMainWindow):
         self.__layout = QVBoxLayout(self.__central_widget)
         self.__menu = MenuManager(self)
         self.setup_initial()
-        
     def setup_initial(self):
         self.__attributes_frame.load_file.connect(self.__on_file_load)
         self.__splitter.setContentsMargins(0, 0, 0, 0)
@@ -48,7 +47,6 @@ class MainWindow(QMainWindow):
         #self.__menu.split.connect(self.__split_editor)
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
-        self.__editor_area.teste()
         
     @Slot(File)
     def __on_file_load(self, file: File) -> None:
