@@ -1,22 +1,20 @@
 import os
 import config
-from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QLabel, QWidget, QVBoxLayout, QLabel
+from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QLabel
 from PySide6.QtCore import QDir, Qt
 from PySide6.QtGui import QIcon
 
-class FileBrowserWidget(QWidget):
+class FileBrowserWidget(QTreeWidget):
     def __init__(self, path=None):
         super().__init__()
-
         self.layout = QVBoxLayout(self)
-        self.path_label = QLabel((path if path else os.getcwd()).split("/")[-1])
-        self.file_tree = QTreeWidget()
-        self.file_tree.setHeaderHidden(True)  
-        self.layout.addWidget(self.path_label)
-        self.layout.addWidget(self.file_tree)
-        self.file_tree.itemExpanded.connect(self.expand_directory)
+        self.setHeaderHidden(True)  
+        self.itemExpanded.connect(self.expand_directory)
         self.__current_path: str = None
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setDragEnabled(True)
+        self.setDragDropMode(QTreeWidget.InternalMove)
+        self.setSelectionMode(QTreeWidget.SingleSelection)
         
     def populate_tree(self, path, parent):
         directory_icon = QIcon(config.icon_path_folder_open)
@@ -34,13 +32,13 @@ class FileBrowserWidget(QWidget):
             else:
                 item.setData(0, Qt.UserRole, (path, entry.fileName()))
                 item.setIcon(0, file_icon)
-
+                
     def expand_directory(self, item):
         if item.childCount() == 1 and item.child(0).text(0) == '':
             item.takeChildren()
             parent_path = self.get_item_path(item)
             self.populate_tree(parent_path, item)
-
+            
     def get_item_path(self, item):
         path = []
         while item:
@@ -49,6 +47,6 @@ class FileBrowserWidget(QWidget):
         return os.path.join(self.__current_path, *path)
     
     def set_current_path(self, path: str) -> None:
-        self.file_tree.clear()
+        self.clear()
         self.__current_path = path
-        self.populate_tree(path, self.file_tree)
+        self.populate_tree(path, self)

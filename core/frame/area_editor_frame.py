@@ -1,3 +1,4 @@
+from PySide6.QtGui import QDropEvent
 from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout, QTextEdit
 from PySide6.QtCore import Qt
 from core.file_handlers import File
@@ -8,7 +9,7 @@ class AreaNode():
         self.leaves: list[AreaNode] = leaves
         self.orientation = orientation
     def get(self) -> tuple[list[object], int, int]: 
-        return (self.leaves, len(self.leaves), self.orientation)       
+        return (self.leaves, len(self.leaves), self.orientation)      
     
 class AreaEditorFrame(QFrame):
     
@@ -17,7 +18,7 @@ class AreaEditorFrame(QFrame):
         self.__editor_list: list[EditorFrame] = list()
         self.__current_editor: EditorFrame = None
         self.__area_tree = AreaNode(leaves=[], orientation=0)
-        self.__area_widget: QFrame = None
+        self.__area_widget: AreaEditorFrame.AreaFrame = None
         self.__area_layout: QBoxLayout = None
         self.__layout = QVBoxLayout()
         self.__layout.setContentsMargins(0,0,0,0)
@@ -57,7 +58,7 @@ class AreaEditorFrame(QFrame):
         spliter = QSplitter(Qt.Vertical) if orientation == 1 else QSplitter(Qt.Horizontal)
         layout.addWidget(spliter)
         for child in leaves:
-            frame = QFrame(parent)
+            frame = AreaEditorFrame.AreaFrame(parent)
             frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             child_layout = self.__build_area(child, frame)
             frame.setLayout(child_layout)

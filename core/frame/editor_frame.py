@@ -1,26 +1,42 @@
 from PySide6.QtWidgets import QFrame, QPlainTextEdit, QVBoxLayout, QSizePolicy
-from PySide6.QtGui import QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
+from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
 from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 
-class CustomPlainTextEdit(QPlainTextEdit):
-    key_pressed = Signal() 
-    cliked = Signal()
-    def keyPressEvent(self, event: QKeyEvent):
-        self.key_pressed.emit()
-        if event.key() == Qt.Key_Tab:
-            self.insertPlainText(' '*4)
-        super().keyPressEvent(event)
-            
-    def mousePressEvent(self, e: QMouseEvent) -> None:
-        self.cliked.emit()
-        return super().mousePressEvent(e)
+
 
 class EditorFrame(QFrame):
     clicked = Signal(QFrame)
+    class CustomPlainTextEdit(QPlainTextEdit):
+        key_pressed = Signal() 
+        cliked = Signal()
+        def __init__(self, parent):
+            super().__init__(parent)
+            self.setAcceptDrops(True)
+        
+        def keyPressEvent(self, event: QKeyEvent):
+            self.key_pressed.emit()
+            if event.key() == Qt.Key_Tab:
+                self.insertPlainText(' '*4)
+            super().keyPressEvent(event)
+        def mousePressEvent(self, e: QMouseEvent) -> None:
+            self.cliked.emit()
+            return super().mousePressEvent(e)
+        
+        def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+            self.setObjectName("QPlainTextEditDragEnter")
+            self.style().polish(self)
+            return super().dragEnterEvent(e)
+        
+        def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
+            self.setObjectName(None)
+            self.style().polish(self)
+            return super().dragLeaveEvent(e)
+    
+        
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("EditorFrame")
@@ -28,7 +44,7 @@ class EditorFrame(QFrame):
         #self.filebar.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.filebar.closing_current.connect(self.__on_current_close)
         self.filebar.tab_click.connect(self.__on_tab_change)
-        self.text_edit = CustomPlainTextEdit(self)
+        self.text_edit = EditorFrame.CustomPlainTextEdit(self)
         #self.text_edit.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.text_edit.setContentsMargins(0, 0, 0, 0)
         self.text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -43,7 +59,7 @@ class EditorFrame(QFrame):
         self.highlight_word("-var")
         
     def idle(self):
-        self.text_edit.setDisabled(True)
+        ...
 
     def highlight_word(self, word):
         cursor = self.text_edit.textCursor()
@@ -58,13 +74,11 @@ class EditorFrame(QFrame):
                 cursor.mergeCharFormat(highlight_format)
                 
     def set_file(self, file: File) -> None:
-        self.text_edit.setDisabled(False)
         self.filebar.add_file(file, current=True)
         file_loader = FileLoader(file)
         self.text_edit.setPlainText(file_loader.load())
         
     def set_blank_file(self) -> None:
-        self.text_edit.setDisabled(False)
         self.filebar.add_file(File("Unknow", None), current=True)
         self.text_edit.setPlainText("")
         

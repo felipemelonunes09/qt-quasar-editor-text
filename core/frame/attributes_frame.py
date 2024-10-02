@@ -1,10 +1,9 @@
 
-from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout
+from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout, QLabel
 from core.shared.widgets.FileBrowser import FileBrowserWidget
 from PySide6.QtCore import Slot, Qt, Signal
 from core.file_objects import File
 import os
-
 
 class AttributesFrame(QFrame):
     load_file = Signal(File)
@@ -13,15 +12,19 @@ class AttributesFrame(QFrame):
         self.setObjectName("AttributesFrame")
         self.setFrameShape(QFrame.StyledPanel)
         self.setFrameShadow(QFrame.Raised)
-        self.frame_layout = QVBoxLayout(self)
-        self.frame_layout.setContentsMargins(0, 0, 0, 0)
-        self.frame_layout.setSpacing(0)
         self.file_browser = FileBrowserWidget()
-        self.file_browser.file_tree.itemClicked.connect(self.atrribute_cliked)
-        self.frame_layout.addWidget(self.file_browser)
+        self.file_browser.itemClicked.connect(self.atrribute_cliked)
+        self.path_label = QLabel("")
+        self.path_label.setContentsMargins(0,0,0,10)
+        self.__layout = QVBoxLayout(self)
+        self.__layout.setContentsMargins(20, 20, 0, 0)
+        self.__layout.setSpacing(0)
+        self.__layout.addWidget(self.path_label)
+        self.__layout.addWidget(self.file_browser)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
     def set_working_dir(self, path: str) -> None:
+        self.path_label.setText(f"<b>{(path if path else os.getcwd()).split("/")[-1].upper()}</b>")
         self.file_browser.set_current_path(path)
         
     @Slot()
