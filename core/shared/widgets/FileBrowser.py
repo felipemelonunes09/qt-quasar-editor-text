@@ -12,6 +12,9 @@ class FileBrowserWidget(QTreeWidget):
         self.itemExpanded.connect(self.expand_directory)
         self.__current_path: str = None
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setDragEnabled(True)
+        self.setDragDropMode(QTreeWidget.InternalMove)
+        self.setSelectionMode(QTreeWidget.SingleSelection)
         
     def populate_tree(self, path, parent):
         directory_icon = QIcon(config.icon_path_folder_open)
@@ -29,13 +32,13 @@ class FileBrowserWidget(QTreeWidget):
             else:
                 item.setData(0, Qt.UserRole, (path, entry.fileName()))
                 item.setIcon(0, file_icon)
-
+                
     def expand_directory(self, item):
         if item.childCount() == 1 and item.child(0).text(0) == '':
             item.takeChildren()
             parent_path = self.get_item_path(item)
             self.populate_tree(parent_path, item)
-
+            
     def get_item_path(self, item):
         path = []
         while item:
