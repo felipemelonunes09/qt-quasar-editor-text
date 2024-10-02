@@ -23,7 +23,7 @@ class FileBrowserWidget(QWidget):
         file_icon = QIcon(config.icon_path_file)
         directory = QDir(path)
         directory.setFilter(QDir.AllEntries | QDir.NoDotAndDotDot)
-        
+        directory.setSorting(QDir.SortFlag.DirsFirst)
         for entry in directory.entryInfoList():
             item = QTreeWidgetItem(parent, [entry.fileName()])
             if entry.isDir():
