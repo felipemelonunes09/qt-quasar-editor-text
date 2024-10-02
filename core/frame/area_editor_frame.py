@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout, QTextEdit
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from core.file_handlers import File
 from core.frame.editor_frame import EditorFrame
 
@@ -40,7 +40,6 @@ class AreaEditorFrame(QFrame):
         self.__current_editor = editor      
         
     def __create_editor(self) -> EditorFrame:
-        print("creating editor")
         new_editor = EditorFrame(self)
         self.__editor_list.append(new_editor)
         self.set_current_editor(new_editor)
