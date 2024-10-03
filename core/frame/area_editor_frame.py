@@ -11,6 +11,7 @@ class AreaNode():
     def get(self) -> tuple[list[object], int, int]: 
         return (self.leaves, len(self.leaves), self.orientation)      
     
+    
 class AreaEditorFrame(QFrame):
     
     def __init__(self, parent: QWidget) -> None:
@@ -29,7 +30,7 @@ class AreaEditorFrame(QFrame):
     def build_area(self) -> None:
         if self.__area_widget:
             self.__area_widget.deleteLater()
-        self.__area_widget = QFrame() 
+        self.__area_widget = QFrame(self) 
         self.__area_layout = self.__build_area(self.__area_tree, self.__area_widget)
         self.__area_widget.setLayout(self.__area_layout)
         self.__layout.addWidget(self.__area_widget)
