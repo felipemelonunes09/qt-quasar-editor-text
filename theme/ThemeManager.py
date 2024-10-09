@@ -23,9 +23,10 @@ class ThemeManager:
                 background-color: { theme['bg-primary-1'] };
             }}
             #EditorFrame QPlainTextEdit {{ background-color: { theme['bg-primary-1'] }; }}
-            #EditorFrame #QPlainTextEditDragEnter {{
+            #EditorFrame #QPlainTextEditDragEnterCenter {{
                 background-color: rgba(255, 255, 255, 75);
             }}
+            
             #FileBar {{  background-color: { theme["bg-primary-2"] };}}
             #FileTab {{ 
                 border: 1px solid { theme["bg-secondary-1"] }; 

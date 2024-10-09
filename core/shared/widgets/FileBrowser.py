@@ -51,7 +51,6 @@ class FileBrowserWidget(QTreeWidget):
         self.__current_path = path
         self.populate_tree(path, self)
         
-    
     def startDrag(self, supported_actions):
         
         item = self.currentItem()

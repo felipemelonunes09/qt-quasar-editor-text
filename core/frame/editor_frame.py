@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QFrame, QPlainTextEdit, QVBoxLayout, QSizePolicy
-from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDropEvent, QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
+from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent, QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
@@ -25,9 +25,14 @@ class EditorFrame(QFrame):
             return super().mousePressEvent(e)
         
         def dragEnterEvent(self, e: QDragEnterEvent) -> None:
-            self.setObjectName("QPlainTextEditDragEnter")
+            self.setObjectName("QPlainTextEditDragEnterCenter")
             self.style().polish(self)
             e.acceptProposedAction()
+        
+        def dragMoveEvent(self, e: QDragMoveEvent) -> None:
+            print(e.position())
+            print(self.size())
+            return super().dragMoveEvent(e)
         
         def dropEvent(self, e: QDropEvent) -> None:
             e.acceptProposedAction()
@@ -40,7 +45,6 @@ class EditorFrame(QFrame):
             self.style().polish(self)
             return super().dragLeaveEvent(e)
     
-        
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("EditorFrame")

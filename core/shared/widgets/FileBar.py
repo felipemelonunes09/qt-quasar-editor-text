@@ -3,7 +3,6 @@ from core.shared.widgets.FileTab import FileTab
 from core.file_objects import File
 from PySide6.QtCore import Signal, Slot
 
-
 class FileBar(QFrame):
     closing_current = Signal(File)
     tab_click = Signal(File)
