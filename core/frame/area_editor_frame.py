@@ -2,24 +2,22 @@ from PySide6.QtGui import QDropEvent
 from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout, QTextEdit
 from PySide6.QtCore import Qt
 from core.file_handlers import File
-from core.frame.editor_frame import EditorFrame
-
-class AreaNode():
-    def __init__(self, leaves: list, orientation: int) -> None:
-        self.leaves: list[AreaNode] = leaves
-        self.orientation = orientation
-    def get(self) -> tuple[list[object], int, int]: 
-        return (self.leaves, len(self.leaves), self.orientation)      
-    
+from core.frame.editor_frame import EditorFrame    
     
 class AreaEditorFrame(QFrame):
+    class AreaNode():
+        def __init__(self, leaves: list, orientation: int) -> None:
+            self.leaves: list[AreaEditorFrame.AreaNode] = leaves
+            self.orientation = orientation
+        def get(self) -> tuple[list[object], int, int]: 
+            return (self.leaves, len(self.leaves), self.orientation)    
     
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.__editor_list: list[EditorFrame] = list()
         self.__current_editor: EditorFrame = None
-        self.__area_tree = AreaNode(leaves=[], orientation=0)
-        self.__area_widget: AreaEditorFrame.AreaFrame = None
+        self.__area_tree = AreaEditorFrame.AreaNode(leaves=[], orientation=0)
+        self.__area_widget: QFrame = None
         self.__area_layout: QBoxLayout = None
         self.__layout = QVBoxLayout()
         self.__layout.setContentsMargins(0,0,0,0)
@@ -39,10 +37,15 @@ class AreaEditorFrame(QFrame):
         return self.__current_editor
     
     def set_current_editor(self, editor: EditorFrame) -> None:
-        self.__current_editor = editor      
+        self.__current_editor = editor  
+        
+    def update_file_saved(self, file: File):
+        for editor in self.__editor_list:
+            editor.filebar.on_file_saved(file)    
         
     def __create_editor(self) -> EditorFrame:
         new_editor = EditorFrame(self)
+        new_editor.splitted.connect(self.__on_split)
         self.__editor_list.append(new_editor)
         self.set_current_editor(new_editor)
         new_editor.clicked.connect(lambda editor: self.set_current_editor(editor)) 
@@ -59,12 +62,11 @@ class AreaEditorFrame(QFrame):
         spliter = QSplitter(Qt.Vertical) if orientation == 1 else QSplitter(Qt.Horizontal)
         layout.addWidget(spliter)
         for child in leaves:
-            frame = AreaEditorFrame.AreaFrame(parent)
+            frame = QFrame(parent)
             frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             child_layout = self.__build_area(child, frame)
             frame.setLayout(child_layout)
             spliter.addWidget(frame)
-    
-    def update_file_saved(self, file: File):
-        for editor in self.__editor_list:
-            editor.filebar.on_file_saved(file)
+            
+    def __on_split(self, direction: int, file: File):
+        print("Splitting here clear" + str(direction))

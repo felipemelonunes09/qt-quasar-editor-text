@@ -4,7 +4,7 @@ from typing import Any, Union
 
 class FileObject():
     
-    def __init__(self, name, path) -> None:
+    def __init__(self, name: str, path: str) -> None:
         self.__name = name
         self.__path = path 
     def get_name(self) -> str:
@@ -17,7 +17,7 @@ class FileObject():
         self.__path = path
 
 class File(FileObject):
-    def __init__(self, name, path) -> Any:
+    def __init__(self, name:str, path: str) -> Any:
         super().__init__(name, path)
         self.__edited = False
     def __hash__(self):
@@ -32,7 +32,7 @@ class File(FileObject):
         return self.__edited
 
 class Dir(FileObject):
-    def __init__(self, name, path) -> None:
+    def __init__(self, name: str, path: str) -> None:
         super().__init__(name, path)
         self.open       = False
         self.entities   = self.__get_entities()    
