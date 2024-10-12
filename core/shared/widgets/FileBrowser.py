@@ -52,11 +52,13 @@ class FileBrowserWidget(QTreeWidget):
         self.populate_tree(path, self)
         
     def startDrag(self, supported_actions):
-        
         item = self.currentItem()
         if item:
+            path, name = item.data(0, Qt.UserRole)
             drag = QDrag(self)
             mime_data = QMimeData()
-            mime_data.setText(item.text(0)) 
+            mime_data.setText(os.path.join(path, name)) 
+            mime_data.setProperty("path", os.path.join(path, name))
+            mime_data.setProperty("name", name)
             drag.setMimeData(mime_data)
             drag.exec(Qt.MoveAction)
