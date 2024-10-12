@@ -3,19 +3,22 @@ from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDro
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
-from core.util.common import distance
+from core.util.common import distance, Direction
 from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 
 
 class EditorFrame(QFrame):
     clicked = Signal(QFrame)
+    splitted = Signal(int, File)
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
+        dropped = Signal(Direction, File)
         def __init__(self, parent):
             super().__init__(parent)
             self.setAcceptDrops(True)
+            self.__last_drop_direction: int = None
         def keyPressEvent(self, event: QKeyEvent):
             self.key_pressed.emit()
             if event.key() == Qt.Key_Tab:
@@ -41,25 +44,31 @@ class EditorFrame(QFrame):
             if distance_top <= h*0.4:
                 self.setObjectName("QPlainTextEditDragEnterTop")
                 self.style().polish(self)
+                self.__last_drop_direction = Direction.TOP
             elif distance_top >= h*0.6:
                 self.setObjectName("QPlainTextEditDragEnterBottom")
                 self.style().polish(self)
+                self.__last_drop_direction = Direction.BOTTOM
             elif distance_left <= w*0.4:
                 self.setObjectName("QPlainTextEditDragEnterLeft")
                 self.style().polish(self)
+                self.__last_drop_direction = Direction.LEFT
             elif distance_left >= w*0.6:
                 self.setObjectName("QPlainTextEditDragEnterRight")
-                self.style().polish(self)
+                self.style().polish(self)                
+                self.__last_drop_direction = Direction.RIGHT
             else:
                 self.setObjectName("QPlainTextEditDragEnterCenter")
                 self.style().polish(self)
+                self.__last_drop_direction = Direction.CENTER
             return super().dragMoveEvent(e)
         
         def dropEvent(self, e: QDropEvent) -> None:
             e.acceptProposedAction()
             self.setObjectName(None)
             self.style().polish(self)
-            print("dropped here")
+            print(self.__last_drop_direction)
+            self.dropped.emit(self.__last_drop_direction, File(e.mimeData().property("name"), e.mimeData().property("path")))
             
         def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
             self.setObjectName(None)
@@ -79,6 +88,7 @@ class EditorFrame(QFrame):
         self.text_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.text_edit.key_pressed.connect(self.__on_text_changed)
         self.text_edit.cliked.connect(lambda: self.clicked.emit(self))
+        self.text_edit.dropped.connect(self.__on_text_edit_dropped)
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)  
         layout.setSpacing(0) 
@@ -132,5 +142,12 @@ class EditorFrame(QFrame):
             self.text_edit.setPlainText("")
             
     @Slot(File)
-    def __on_tab_change(self, file):
+    def __on_tab_change(self, file) -> None:
         self.set_file(file)
+        
+    @Slot(Direction, File)
+    def __on_text_edit_dropped(self, direction: Direction, file: File) -> None:
+        if direction == Direction.CENTER:
+            self.set_file(file=file)
+        else:
+            self.splitted.emit(direction, file)
