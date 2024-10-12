@@ -1,16 +1,16 @@
 import os
 import config
 from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QLabel
-from PySide6.QtCore import QDir, Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QDir, Qt, QMimeData
+from PySide6.QtGui import QIcon, QDrag
 
 class FileBrowserWidget(QTreeWidget):
     def __init__(self, path=None):
         super().__init__()
         self.layout = QVBoxLayout(self)
-        self.setHeaderHidden(True)  
-        self.itemExpanded.connect(self.expand_directory)
         self.__current_path: str = None
+        self.itemExpanded.connect(self.expand_directory)
+        self.setHeaderHidden(True)  
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setDragEnabled(True)
         self.setDragDropMode(QTreeWidget.InternalMove)
@@ -50,3 +50,13 @@ class FileBrowserWidget(QTreeWidget):
         self.clear()
         self.__current_path = path
         self.populate_tree(path, self)
+        
+    def startDrag(self, supported_actions):
+        
+        item = self.currentItem()
+        if item:
+            drag = QDrag(self)
+            mime_data = QMimeData()
+            mime_data.setText(item.text(0)) 
+            drag.setMimeData(mime_data)
+            drag.exec(Qt.MoveAction)
