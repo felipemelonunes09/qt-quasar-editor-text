@@ -3,8 +3,10 @@ from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDro
 from core.shared.widgets.FileBar import FileBar
 from core.file_handlers import FileLoader
 from core.file_objects import File
+from core.util.common import distance
 from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
+
 
 class EditorFrame(QFrame):
     clicked = Signal(QFrame)
@@ -14,7 +16,6 @@ class EditorFrame(QFrame):
         def __init__(self, parent):
             super().__init__(parent)
             self.setAcceptDrops(True)
-        
         def keyPressEvent(self, event: QKeyEvent):
             self.key_pressed.emit()
             if event.key() == Qt.Key_Tab:
@@ -30,8 +31,28 @@ class EditorFrame(QFrame):
             e.acceptProposedAction()
         
         def dragMoveEvent(self, e: QDragMoveEvent) -> None:
-            print(e.position())
-            print(self.size())
+            h = self.size().height()
+            w = self.size().width()
+            drag_position = (e.position().x(), e.position().y())
+            anchor_top=(w/2, 0)
+            anchor_left=(0, h/2)
+            distance_top = distance(drag_position, anchor_top)
+            distance_left = distance(drag_position, anchor_left)
+            if distance_top <= h*0.4:
+                self.setObjectName("QPlainTextEditDragEnterTop")
+                self.style().polish(self)
+            elif distance_top >= h*0.6:
+                self.setObjectName("QPlainTextEditDragEnterBottom")
+                self.style().polish(self)
+            elif distance_left <= w*0.4:
+                self.setObjectName("QPlainTextEditDragEnterLeft")
+                self.style().polish(self)
+            elif distance_left >= w*0.6:
+                self.setObjectName("QPlainTextEditDragEnterRight")
+                self.style().polish(self)
+            else:
+                self.setObjectName("QPlainTextEditDragEnterCenter")
+                self.style().polish(self)
             return super().dragMoveEvent(e)
         
         def dropEvent(self, e: QDropEvent) -> None:
