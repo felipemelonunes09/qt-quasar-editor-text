@@ -1,15 +1,22 @@
-from PySide6.QtGui import QDropEvent
-from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout, QTextEdit
+from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout
 from PySide6.QtCore import Qt
+from PySide6.QtCore import Slot, Qt
 from core.file_handlers import File
 from core.frame.editor_frame import EditorFrame    
+from core.util.common import Direction
+from typing import Self
+
     
 class AreaEditorFrame(QFrame):
     class AreaNode():
-        def __init__(self, leaves: list, orientation: int, frame: QFrame = None) -> None:
-            self.leaves: list[AreaEditorFrame.AreaNode] = leaves
+        def __init__(self, leaves: list, orientation: int, frame: QFrame = None, parent: Self=None) -> None:
+            self.leaves: list[Self] = leaves
             self.orientation = orientation
             self.frame: QFrame = None
+            self.parent: Self = parent
+            
+        def set_parent(self, parent: Self) -> None:
+            self.parent = parent
         
         def set_frame(self, frame: QFrame) -> None:
             self.frame = frame
@@ -17,14 +24,18 @@ class AreaEditorFrame(QFrame):
         def get_frame(self) -> QFrame | None:
             return self.frame
         
-        def get(self) -> tuple[list[object], int, int]: 
+        def get_parent(self) -> Self:
+            return self.parent
+        
+        def get(self) -> tuple[list[Self], int, int]: 
             return (self.leaves, len(self.leaves), self.orientation)    
     
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.__editor_list: list[EditorFrame] = list()
         self.__current_editor: EditorFrame = None
-        self.__area_tree = AreaEditorFrame.AreaNode(leaves=[], orientation=0)
+        self.__area_tree = AreaEditorFrame.AreaNode(leaves=[AreaEditorFrame.AreaNode(leaves=[], orientation=0)], orientation=0)
+        self.__area_tree.leaves[0].set_parent(self.__area_tree)
         self.__area_widget: QFrame = None
         self.__area_layout: QBoxLayout = None
         self.__layout = QVBoxLayout()
@@ -67,6 +78,8 @@ class AreaEditorFrame(QFrame):
             frame = area.get_frame() 
             if not frame: 
                 frame = self.__create_editor() 
+                setattr(frame, "__area_node__", area)
+                area.set_frame(frame)
             layout.addWidget(frame)
             return layout
         spliter = QSplitter(Qt.Vertical) if orientation == 1 else QSplitter(Qt.Horizontal)
@@ -77,8 +90,21 @@ class AreaEditorFrame(QFrame):
             child_layout = self.__build_area(child, frame)
             frame.setLayout(child_layout)
             spliter.addWidget(frame)
-            
-    def __on_split(self, direction: int, file: File):
-        print("Splitting here clear" + str(direction))
-        
-        
+            child.set_parent(area)
+    
+    def __on_split(self, direction: Direction, file: File, editor: QFrame):
+        __area_node__: AreaEditorFrame.AreaNode = getattr(editor, "__area_node__")
+        if __area_node__:
+            parent = __area_node__.get_parent()
+            if parent:
+                index = parent.leaves.index(__area_node__)
+                if direction == Direction.LEFT:
+                    parent.leaves[index:index] = [AreaEditorFrame.AreaNode(leaves=[], orientation=0)]
+                if direction == Direction.RIGHT:
+                    parent.leaves[index+1:index+1] = [AreaEditorFrame.AreaNode(leaves=[], orientation=0)]
+                    pass
+                if direction == Direction.TOP:
+                    pass
+                if direction == Direction.BOTTOM:
+                    pass
+            self.build_area()
