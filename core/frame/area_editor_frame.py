@@ -12,7 +12,7 @@ class AreaEditorFrame(QFrame):
         def __init__(self, leaves: list, orientation: int, frame: QFrame = None, parent: Self=None) -> None:
             self.leaves: list[Self] = leaves
             self.orientation = orientation
-            self.frame: QFrame = None
+            self.frame: QFrame = frame
             self.parent: Self = parent
             
         def set_parent(self, parent: Self) -> None:
@@ -78,8 +78,8 @@ class AreaEditorFrame(QFrame):
             frame = area.get_frame() 
             if not frame: 
                 frame = self.__create_editor() 
-                setattr(frame, "__area_node__", area)
                 area.set_frame(frame)
+            setattr(frame, "__area_node__", area)
             layout.addWidget(frame)
             return layout
         spliter = QSplitter(Qt.Vertical) if orientation == 1 else QSplitter(Qt.Horizontal)
@@ -97,15 +97,14 @@ class AreaEditorFrame(QFrame):
         if __area_node__:
             parent = __area_node__.get_parent()
             if parent:
+                print(__area_node__.leaves)
                 if direction == Direction.LEFT:
                     frame = __area_node__.get_frame()
-                    __area_node__.set_frame(None)
                     __area_node__.orientation = 0
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
                 if direction == Direction.RIGHT:
                     frame = __area_node__.get_frame()
-                    __area_node__.set_frame(None)
                     __area_node__.orientation = 0
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
@@ -117,8 +116,9 @@ class AreaEditorFrame(QFrame):
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
                 if direction == Direction.BOTTOM:
                     frame = __area_node__.get_frame()
-                    __area_node__.set_frame(None)
                     __area_node__.orientation = 1
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
+            print(__area_node__.leaves)
+            print("============================")
             self.build_area()
