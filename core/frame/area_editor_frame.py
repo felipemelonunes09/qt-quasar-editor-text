@@ -6,9 +6,17 @@ from core.frame.editor_frame import EditorFrame
     
 class AreaEditorFrame(QFrame):
     class AreaNode():
-        def __init__(self, leaves: list, orientation: int) -> None:
+        def __init__(self, leaves: list, orientation: int, frame: QFrame = None) -> None:
             self.leaves: list[AreaEditorFrame.AreaNode] = leaves
             self.orientation = orientation
+            self.frame: QFrame = None
+        
+        def set_frame(self, frame: QFrame) -> None:
+            self.frame = frame
+            
+        def get_frame(self) -> QFrame | None:
+            return self.frame
+        
         def get(self) -> tuple[list[object], int, int]: 
             return (self.leaves, len(self.leaves), self.orientation)    
     
@@ -56,7 +64,9 @@ class AreaEditorFrame(QFrame):
         layout = QVBoxLayout(parent) if orientation == 1 else QHBoxLayout(parent)
         layout.setContentsMargins(0,0,0,0)
         if height == 0:
-            frame = self.__create_editor()
+            frame = area.get_frame() 
+            if not frame: 
+                frame = self.__create_editor() 
             layout.addWidget(frame)
             return layout
         spliter = QSplitter(Qt.Vertical) if orientation == 1 else QSplitter(Qt.Horizontal)
@@ -70,3 +80,5 @@ class AreaEditorFrame(QFrame):
             
     def __on_split(self, direction: int, file: File):
         print("Splitting here clear" + str(direction))
+        
+        
