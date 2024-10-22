@@ -6,11 +6,12 @@ from core.file_objects import File
 from core.util.common import distance, Direction
 from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
+from typing import Self
 
 
 class EditorFrame(QFrame):
     clicked = Signal(QFrame)
-    splitted = Signal(int, File)
+    splitted = Signal(Direction, File, QFrame)
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
@@ -67,7 +68,6 @@ class EditorFrame(QFrame):
             e.acceptProposedAction()
             self.setObjectName(None)
             self.style().polish(self)
-            print(self.__last_drop_direction)
             self.dropped.emit(self.__last_drop_direction, File(e.mimeData().property("name"), e.mimeData().property("path")))
             
         def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
@@ -150,4 +150,4 @@ class EditorFrame(QFrame):
         if direction == Direction.CENTER:
             self.set_file(file=file)
         else:
-            self.splitted.emit(direction, file)
+            self.splitted.emit(direction, file, self)
