@@ -9,7 +9,7 @@ from typing import Self
     
 class AreaEditorFrame(QFrame):
     class AreaNode():
-        def __init__(self, leaves: list, orientation: int, frame: QFrame = None, parent: Self=None) -> None:
+        def __init__(self, leaves: list, orientation: int, frame: EditorFrame = None, parent: Self=None) -> None:
             self.leaves: list[Self] = leaves
             self.orientation = orientation
             self.frame: QFrame = frame
@@ -18,10 +18,10 @@ class AreaEditorFrame(QFrame):
         def set_parent(self, parent: Self) -> None:
             self.parent = parent
         
-        def set_frame(self, frame: QFrame) -> None:
+        def set_frame(self, frame: EditorFrame) -> None:
             self.frame = frame
             
-        def get_frame(self) -> QFrame | None:
+        def get_frame(self) -> EditorFrame | None:
             return self.frame
         
         def get_parent(self) -> Self:
@@ -97,25 +97,21 @@ class AreaEditorFrame(QFrame):
         if __area_node__:
             parent = __area_node__.get_parent()
             if parent:
+                frame = __area_node__.get_frame()
+                new_frame = self.__create_editor()
+                new_frame.set_file(file)
+                __area_node__.orientation = 0
                 if direction == Direction.LEFT:
-                    frame = __area_node__.get_frame()
-                    __area_node__.orientation = 0
-                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
+                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=new_frame, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
                 if direction == Direction.RIGHT:
-                    frame = __area_node__.get_frame()
-                    __area_node__.orientation = 0
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
-                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
+                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=new_frame, parent=__area_node__))
                 if direction == Direction.TOP:
-                    frame = __area_node__.get_frame()
-                    __area_node__.set_frame(None)
                     __area_node__.orientation = 1
-                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
+                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=new_frame, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
                 if direction == Direction.BOTTOM:
-                    frame = __area_node__.get_frame()
-                    __area_node__.orientation = 1
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
-                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=None, parent=__area_node__))
+                    __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=new_frame, parent=__area_node__))
             self.build_area()
