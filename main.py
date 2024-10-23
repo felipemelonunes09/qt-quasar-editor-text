@@ -1,10 +1,8 @@
 import sys
 import config
-
 from PySide6.QtCore import Slot, Signal
 from PySide6.QtWidgets import QApplication, QVBoxLayout, QSplitter, QWidget, QMainWindow
 from PySide6.QtGui import QShortcut, QKeySequence
-from core.frame.editor_frame import EditorFrame
 from core.frame.attributes_frame import AttributesFrame
 from core.frame.initial_frame import InitialFrame
 from theme.ThemeManager import ThemeManager
@@ -47,11 +45,10 @@ class MainWindow(QMainWindow):
         #self.__menu.split.connect(self.__split_editor)
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
-        
     @Slot(File)
     def __on_file_load(self, file: File) -> None:
+        print(file.get_name())
         self.__editor_area.get_current_editor().set_file(file)
-        
     @Slot()
     def __save_file(self, *a, **K) -> None:
         content, file = self.__editor_area.get_current_editor().get_current()
@@ -65,8 +62,7 @@ class MainWindow(QMainWindow):
             self.__initial_frame.hide()
             self.__attributes_frame.hide()
             self.__splitter.show()
-            self.__editor_area.get_current_editor().set_file(file)
-            
+            self.__editor_area.get_current_editor().set_file(file)     
     @Slot()
     def __create_file(self, *a, **k) -> None:
         self.__initial_frame.hide()
