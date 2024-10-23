@@ -24,8 +24,9 @@ class FileBar(QFrame):
         return self.__current_file
         
     def add_file(self, file: File, current=False) -> None:
+        print(file.get_name())
+        self.__remove_current_from_all()
         if not file.get_path() in self.__list: 
-            self.__remove_current_from_all()
             tab = self.__create_tab(file)
             self.__tabs[file.get_path()] = tab
             self.__list[file.get_path()] = file
@@ -33,7 +34,10 @@ class FileBar(QFrame):
             self.__current_file = file if current else None
             tab.set_active() if current else tab.set_disable()
         else:
+            print("file is already on the list")
+            ## create routine to set the current eddited path
             file = self.__list.get(file.get_path(), None)
+            self.__tabs[file.get_path()].set_active()
             if current and file:
                 self.__current_file = file
             
