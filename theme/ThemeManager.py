@@ -16,6 +16,9 @@ class ThemeManager:
                 background-color: { theme['bg-secondary-1'] };
                 font-weight: bold;
             }}
+            #InitialButton QLabel {{
+                color: { theme['text-color-primary'] };
+            }}
             #AttributesFrame {{
                 background-color: { theme['bg-primary-2'] };
             }}

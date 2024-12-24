@@ -23,7 +23,7 @@ class InitialButton(QWidget):
         layout.addWidget(self.image_label)
         layout.addWidget(self.text_label)
         self.setLayout(layout)
-        self.signal=signal
+        self.signal: Signal =signal
         
 
     def enterEvent(self, event):
