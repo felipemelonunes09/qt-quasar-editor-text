@@ -2,12 +2,16 @@ from PySide6.QtWidgets import QWidget
 import json
 
 class ThemeManager:
-    def __init__(self, theme_file: str) -> None:
+    theme: dict[dict, str | dict]
+    def __init__(self, theme_file: str, context_theme: str) -> None:
         with open(theme_file, "r") as file:
             self.theme = json.load(file)
+        
+        self.context_theme_name = context_theme
+        ThemeManager.theme = self.theme[self.context_theme_name]
     
     def apply_theme(self, theme_name: str, window: QWidget):
-        theme = self.theme.get(theme_name, {})
+        theme = self.theme.get(theme_name, self.theme[self.context_theme_name])
         stylesheet = f"""
             QLabel {{
                 color: { theme['text-color-primary'] };
@@ -77,7 +81,7 @@ class ThemeManager:
                 background-color: { theme['bg-primary-1'] };
                 border-top: 2px solid #334EAC;
                 border-left: 1px solid { theme["bg-secondary-1"] }; 
-                border-right: 1px solide { theme["bg-secondary-1"] };  
+                border-right: 1px solid { theme["bg-secondary-1"] };  
             }}
             #FileTab QPushButton {{
                 border: none;

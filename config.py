@@ -11,6 +11,7 @@ class Config():
     def get_theme_config(self) -> dict:
         return self.config['style']
     
+    
 config = Config()
 screen = config.get_screen_config()
 theme = config.get_theme_config()
