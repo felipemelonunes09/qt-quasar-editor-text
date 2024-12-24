@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         self.__central_widget = QWidget(self)
         self.__editor = Editor()
         self.__splitter = QSplitter(self)
-        self.__theme_manager = ThemeManager(config.pallete_path)
+        self.__theme_manager = ThemeManager(config.pallete_path, config.theme)
         self.__attributes_frame= AttributesFrame(self.__splitter)
         self.__initial_frame = InitialFrame(self.__splitter)
         self.__editor_area = AreaEditorFrame(self.__splitter)

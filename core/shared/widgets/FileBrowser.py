@@ -2,7 +2,9 @@ import os
 import config
 from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QLabel
 from PySide6.QtCore import QDir, Qt, QMimeData
-from PySide6.QtGui import QIcon, QDrag
+from PySide6.QtGui import QIcon, QDrag, QBrush, QColor
+
+from theme.ThemeManager import ThemeManager
 
 class FileBrowserWidget(QTreeWidget):
     def __init__(self, path=None):
@@ -24,6 +26,7 @@ class FileBrowserWidget(QTreeWidget):
         directory.setSorting(QDir.SortFlag.DirsFirst)
         for entry in directory.entryInfoList():
             item = QTreeWidgetItem(parent, [entry.fileName()])
+            item.setForeground(0, QBrush(QColor(ThemeManager.theme['text-color-primary'])))
             if entry.isDir():
                 item.setIcon(0, directory_icon)
                 dummy_child = QTreeWidgetItem()
