@@ -5,7 +5,8 @@ screen:
       left: 50
       right: 400
     assets:
-      path: "/Users/felipenunes/projects/python-widgets/text-editor/assets" 
+      path: "./assets" 
 style: 
-  pallete-path: "/Users/felipenunes/projects/python-widgets/text-editor/theme/palletes.json"
+  pallete-path: "./theme/palletes.json"
   theme: "dark"
+
