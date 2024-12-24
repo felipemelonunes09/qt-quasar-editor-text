@@ -23,9 +23,8 @@ class InitialButton(QWidget):
         layout.addWidget(self.image_label)
         layout.addWidget(self.text_label)
         self.setLayout(layout)
-        self.signal: Signal =signal
+        self.signal: Signal = signal
         
-
     def enterEvent(self, event):
         super().enterEvent(event)
         self.background_label.setStyleSheet("border-top: 5px solid white;")  
