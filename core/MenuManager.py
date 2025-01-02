@@ -13,7 +13,7 @@ class MenuManager(QObject):
         
     def setup_menus(self):
         self.file_menu = self.menu_bar.addMenu("Window")
-        self.file_menu.addAction(self.create_action("Split editor", self.split.emit))
+        #self.file_menu.addAction(self.create_action("Split editor", self.split.emit))
     
     def create_action(self, name, callback):
         action = QAction(name, self.menu_bar)
