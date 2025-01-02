@@ -1,5 +1,6 @@
 
 from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout, QLabel
+from core.frame.editor_frame import EditorFrame
 from core.shared.widgets.FileBrowser import FileBrowserWidget
 from PySide6.QtCore import Slot, Qt, Signal
 from core.file_objects import File
@@ -23,6 +24,7 @@ class AttributesFrame(QFrame):
         self.__layout.addWidget(self.file_browser)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
+        
     def set_working_dir(self, path: str) -> None:
         self.path_label.setText(f"<b>{(path if path else os.getcwd()).split("/")[-1].upper()}</b>")
         self.file_browser.set_current_path(path)
@@ -35,3 +37,6 @@ class AttributesFrame(QFrame):
             path = os.path.join(path, filename)
             file = File(filename, path)
             self.load_file.emit(file)
+
+    def change_item_color(self) -> None:
+        print("test")

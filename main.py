@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         self.__editor = Editor()
         self.__splitter = QSplitter(self)
         self.__theme_manager = ThemeManager(config.pallete_path, config.theme)
-        self.__attributes_frame= AttributesFrame(self.__splitter)
+        self.__attributes_frame = AttributesFrame(self.__splitter)
         self.__initial_frame = InitialFrame(self.__splitter)
         self.__editor_area = AreaEditorFrame(self.__splitter)
         self.__layout = QVBoxLayout(self.__central_widget)
@@ -42,9 +42,10 @@ class MainWindow(QMainWindow):
         self.__splitter.hide()
         self.__save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         self.__save_shortcut.activated.connect(self.__save_file)
-        #self.__menu.split.connect(self.__split_editor)
+        self.__editor_area.file_edited.connect(self.__on_file_edited)
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
+        
     @Slot(File)
     def __on_file_load(self, file: File) -> None:
         print(file.get_name())
@@ -80,11 +81,16 @@ class MainWindow(QMainWindow):
         self.__editor_area.get_current_editor().idle()
         self.__attributes_frame.set_working_dir(dir_path)
         self.__splitter.show()
+    
+    @Slot()
+    def __on_file_edited(self) -> None:
+        print("Change on color")
+        #self.__attributes_frame.change_item_color(Qt)
 
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
-    window.setWindowTitle("<-> Quasar <->")
+    window.setWindowTitle("Quasar Editor")
     window.resize(1024, 768)
     window.show()
     sys.exit(app.exec())

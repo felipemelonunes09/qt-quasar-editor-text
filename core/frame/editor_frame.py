@@ -8,11 +8,11 @@ from PySide6.QtCore import Signal, Slot, Qt
 from PySide6.QtGui import QKeyEvent
 from typing import Self
 
-
 class EditorFrame(QFrame):
-    clicked = Signal(QFrame)
-    splitted = Signal(Direction, File, QFrame)
-    remove = Signal(QFrame)
+    clicked     = Signal(QFrame)
+    splitted    = Signal(Direction, File, QFrame)
+    remove      = Signal(QFrame)
+    edited      = Signal()
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
@@ -133,6 +133,7 @@ class EditorFrame(QFrame):
     @Slot()
     def __on_text_changed(self, *args, **kwargs):
         #self.highlight_word()
+        self.edited.emit()
         self.filebar.set_current_file_edited()
         
     @Slot(File)
