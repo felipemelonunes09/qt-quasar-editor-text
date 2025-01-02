@@ -5,7 +5,8 @@ from PySide6.QtCore import Signal, Slot
 
 class FileBar(QFrame):
     closing_current = Signal(File)
-    tab_click = Signal(File)
+    tab_click       = Signal(File)
+    bar_empty       = Signal()
     def __init__(self, parent: QWidget) -> None:
         super().__init__(parent)
         self.setObjectName("FileBar")
@@ -17,6 +18,7 @@ class FileBar(QFrame):
         self.__layout.setSpacing(0)
         self.__layout.addStretch()
         self.__current_file: File = None
+        self.__size: int = 0
         self.setLayout(self.__layout)
         self.update()
         
@@ -33,6 +35,7 @@ class FileBar(QFrame):
             self.__layout.addWidget(tab)
             self.__current_file = file if current else None
             tab.set_active() if current else tab.set_disable()
+            self.__size += 1
         else:
             print("file is already on the list")
             ## create routine to set the current eddited path
@@ -47,10 +50,13 @@ class FileBar(QFrame):
             self.__list[file.get_path()] = None
             del self.__tabs[file.get_path()]
             del self.__list[file.get_path()]
+            self.__size -= 1
+            if self.__size == 0:
+                self.bar_empty.emit()
     
     def set_current_file_edited(self):
-        print("file was edited")
         if self.__current_file:
+            print(f"(+) file {self.__current_file.get_name()} is edited")
             self.__current_file.set_edited(True)
             self.__tabs[self.__current_file.get_path()].set_edited()
     
