@@ -6,7 +6,6 @@ from core.frame.editor_frame import EditorFrame
 from core.util.common import Direction
 from typing import Self
 
-    
 class AreaEditorFrame(QFrame):
     class AreaNode():
         def __init__(self, leaves: list, orientation: int, frame: EditorFrame = None, parent: Self=None) -> None:
@@ -68,6 +67,7 @@ class AreaEditorFrame(QFrame):
         self.__editor_list.append(new_editor)
         self.set_current_editor(new_editor)
         new_editor.clicked.connect(lambda editor: self.set_current_editor(editor)) 
+        new_editor.remove.connect(self.__on_remove)
         return new_editor
         
     def __build_area(self, area: AreaNode, parent: QWidget) -> QBoxLayout:
@@ -79,6 +79,7 @@ class AreaEditorFrame(QFrame):
             if not frame: 
                 frame = self.__create_editor() 
                 area.set_frame(frame)
+            print(frame)
             setattr(frame, "__area_node__", area)
             layout.addWidget(frame)
             return layout
@@ -115,4 +116,21 @@ class AreaEditorFrame(QFrame):
                     __area_node__.orientation = 1
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=frame, parent=__area_node__))
                     __area_node__.leaves.append(AreaEditorFrame.AreaNode(leaves=[], orientation=0, frame=new_frame, parent=__area_node__))
+                # parent no longer has a referente of a frame (this is to prevent a 'Internal C++ object (Onject) already deleted.')
+                parent.set_frame(None)
             self.build_area()
+    
+    def __on_remove(self, editor: QFrame): 
+        __area_node__: AreaEditorFrame.AreaNode = getattr(editor, "__area_node__")
+        if __area_node__:
+            parent = __area_node__.get_parent()
+            if parent:
+                parent.leaves.remove(__area_node__)
+                self.build_area()
+                
+    def __print(self) -> None:
+        def __print_node(node: AreaEditorFrame.AreaNode, level: int) -> None:
+            print(f"{' ' * level} {id(node)}")
+            for child in node.leaves:
+                __print_node(child, level+1)
+        __print_node(self.__area_tree, 0)

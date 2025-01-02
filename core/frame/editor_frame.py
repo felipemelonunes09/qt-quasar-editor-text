@@ -12,6 +12,7 @@ from typing import Self
 class EditorFrame(QFrame):
     clicked = Signal(QFrame)
     splitted = Signal(Direction, File, QFrame)
+    remove = Signal(QFrame)
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
@@ -82,6 +83,7 @@ class EditorFrame(QFrame):
         #self.filebar.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.filebar.closing_current.connect(self.__on_current_close)
         self.filebar.tab_click.connect(self.__on_tab_change)
+        self.filebar.bar_empty.connect(self.__on_bar_empty)
         self.text_edit = EditorFrame.CustomPlainTextEdit(self)
         #self.text_edit.setAttribute(Qt.WA_TransparentForMouseEvents)
         self.text_edit.setContentsMargins(0, 0, 0, 0)
@@ -147,7 +149,8 @@ class EditorFrame(QFrame):
         
     @Slot(Direction, File)
     def __on_text_edit_dropped(self, direction: Direction, file: File) -> None:
-        if direction == Direction.CENTER:
-            self.set_file(file=file)
-        else:
-            self.splitted.emit(direction, file, self)
+        self.set_file(file=file) if direction == Direction.CENTER else self.splitted.emit(direction, file, self)
+
+    @Slot()
+    def __on_bar_empty(self):
+        self.remove.emit(self)
