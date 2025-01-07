@@ -7,5 +7,5 @@ python3 main.py
 
 
 ## Features
-1 - Text Highlight
-2 - Open source 
+- Text Highlight
+- Open source 
