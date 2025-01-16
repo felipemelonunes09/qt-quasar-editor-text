@@ -13,6 +13,12 @@ class ThemeManager:
     def apply_theme(self, theme_name: str, window: QWidget):
         theme = self.theme.get(theme_name, self.theme[self.context_theme_name])
         stylesheet = f"""
+            QMenuBar {{
+                background-color: { theme['bg-secondary-1'] };
+                color: { theme['text-menu-color'] };
+            }}
+            QMenuBar::item {{}}
+            QMenuBar::item::selected {{}}
             QLabel {{
                 color: { theme['text-color-primary'] };
             }}
