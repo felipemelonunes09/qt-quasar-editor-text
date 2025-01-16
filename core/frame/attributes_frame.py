@@ -2,12 +2,11 @@
 from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout, QLabel
 from core.frame.editor_frame import EditorFrame
 from core.shared.widgets.FileBrowser import FileBrowserWidget
-from PySide6.QtCore import Slot, Qt, Signal
-from core.file_objects import File
+from PySide6.QtCore import Slot, Qt, Signal, QFile
 import os
 
 class AttributesFrame(QFrame):
-    load_file = Signal(File)
+    load_file = Signal(QFile)
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.setObjectName("AttributesFrame")
@@ -34,7 +33,7 @@ class AttributesFrame(QFrame):
         if data:
             path, filename = data
             path = os.path.join(path, filename)
-            file = File(filename, path)
+            file = QFile(os.path.join(path, filename))
             self.load_file.emit(file)
 
     def change_item_color(self, path: str, color: str) -> None:

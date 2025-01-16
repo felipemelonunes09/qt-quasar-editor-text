@@ -1,13 +1,12 @@
 from PySide6.QtWidgets import QFrame, QWidget, QVBoxLayout, QSplitter,QSizePolicy, QHBoxLayout, QBoxLayout
 from PySide6.QtCore import Qt
-from PySide6.QtCore import Slot, Qt, Signal
-from core.file_handlers import File
+from PySide6.QtCore import Slot, Qt, Signal, QFile
 from core.frame.editor_frame import EditorFrame    
 from core.util.common import Direction
 from typing import Self
 
 class AreaEditorFrame(QFrame):
-    file_edited = Signal(File)
+    file_edited = Signal(QFile)
     class AreaNode():
         def __init__(self, leaves: list, orientation: int, frame: EditorFrame = None, parent: Self=None) -> None:
             self.leaves: list[Self] = leaves
@@ -58,7 +57,7 @@ class AreaEditorFrame(QFrame):
     def set_current_editor(self, editor: EditorFrame) -> None:
         self.__current_editor = editor  
         
-    def update_file_saved(self, file: File):
+    def update_file_saved(self, file: QFile):
         for editor in self.__editor_list:
             editor.filebar.on_file_saved(file)    
         
@@ -95,7 +94,7 @@ class AreaEditorFrame(QFrame):
             spliter.addWidget(frame)
             child.set_parent(area)
     
-    def __on_split(self, direction: Direction, file: File, editor: QFrame):
+    def __on_split(self, direction: Direction, file: QFile, editor: QFrame):
         __area_node__: AreaEditorFrame.AreaNode = getattr(editor, "__area_node__")
         if __area_node__:
             parent = __area_node__.get_parent()

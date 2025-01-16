@@ -1,22 +1,21 @@
+import os
 from PySide6.QtWidgets import QFrame, QPlainTextEdit, QVBoxLayout, QSizePolicy
 from PySide6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDragMoveEvent, QDropEvent, QMouseEvent, QTextCursor, QTextCharFormat, QBrush, QColor
 from core.shared.widgets.FileBar import FileBar
-from core.file_handlers import FileLoader
-from core.file_objects import File
 from core.util.common import distance, Direction
-from PySide6.QtCore import Signal, Slot, Qt
+from PySide6.QtCore import Signal, Slot, Qt, QFile
 from PySide6.QtGui import QKeyEvent
 from typing import Self
 
 class EditorFrame(QFrame):
     clicked     = Signal(QFrame)
-    splitted    = Signal(Direction, File, QFrame)
+    splitted    = Signal(Direction, QFile, QFrame)
     remove      = Signal(QFrame)
-    edited      = Signal(File)
+    edited      = Signal(QFile)
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
-        dropped = Signal(Direction, File)
+        dropped = Signal(Direction, QFile)
         def __init__(self, parent):
             super().__init__(parent)
             self.setAcceptDrops(True)
@@ -69,7 +68,7 @@ class EditorFrame(QFrame):
             e.acceptProposedAction()
             self.setObjectName(None)
             self.style().polish(self)
-            self.dropped.emit(self.__last_drop_direction, File(e.mimeData().property("name"), e.mimeData().property("path")))
+            self.dropped.emit(self.__last_drop_direction, QFile(os.path.join(e.mimeData().property("path"), e.mimeData().property("name"))))
             
         def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
             self.setObjectName(None)
@@ -114,16 +113,15 @@ class EditorFrame(QFrame):
             if not cursor.isNull():
                 cursor.mergeCharFormat(highlight_format)
                 
-    def set_file(self, file: File) -> None:
+    def set_file(self, file: QFile) -> None:
         self.filebar.add_file(file, current=True)
-        file_loader = FileLoader(file)
-        self.text_edit.setPlainText(file_loader.load())
+        self.text_edit.setPlainText(file.readAll().data().decode("utf-8"))
         
     def set_blank_file(self) -> None:
-        self.filebar.add_file(File("Unknow", None), current=True)
+        self.filebar.add_file(QFile("Unknow"), current=True)
         self.text_edit.setPlainText("")
         
-    def get_current(self) -> tuple[str, File | None]:
+    def get_current(self) -> tuple[str, QFile | None]:
         return self.text_edit.toPlainText(), self.filebar.get_current_file()
     
     def mousePressEvent(self, event) -> None:
@@ -136,20 +134,19 @@ class EditorFrame(QFrame):
         self.edited.emit(self.filebar.get_current_file())
         self.filebar.set_current_file_edited()
         
-    @Slot(File)
-    def __on_current_close(self, next_file: File | None):
+    @Slot(QFile)
+    def __on_current_close(self, next_file: QFile | None):
         if (next_file):
-            file_loader = FileLoader(next_file)
-            self.text_edit.setPlainText(file_loader.load())
+            self.text_edit.setPlainText(next_file.readAll().data().decode("utf-8"))
         else:
             self.text_edit.setPlainText("")
             
-    @Slot(File)
+    @Slot(QFile)
     def __on_tab_change(self, file) -> None:
         self.set_file(file)
         
-    @Slot(Direction, File)
-    def __on_text_edit_dropped(self, direction: Direction, file: File) -> None:
+    @Slot(Direction, QFile)
+    def __on_text_edit_dropped(self, direction: Direction, file: QFile) -> None:
         self.set_file(file=file) if direction == Direction.CENTER else self.splitted.emit(direction, file, self)
 
     @Slot()

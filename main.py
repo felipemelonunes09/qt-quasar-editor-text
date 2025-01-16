@@ -1,18 +1,17 @@
 import sys
 import config
-from PySide6.QtCore import Slot, Signal
+from PySide6.QtCore import Slot, Signal, QFile, QDir
 from PySide6.QtWidgets import QApplication, QVBoxLayout, QSplitter, QWidget, QMainWindow
 from PySide6.QtGui import QShortcut, QKeySequence
 from core.frame.attributes_frame import AttributesFrame
 from core.frame.initial_frame import InitialFrame
-from theme.ThemeManager import ThemeManager
 from core.Editor import Editor
-from core.file_objects import File
 from core.MenuManager import MenuManager
 from core.frame.area_editor_frame import AreaEditorFrame    
+from theme.ThemeManager import ThemeManager
 
 class MainWindow(QMainWindow): 
-    file_saved = Signal(File)
+    file_saved = Signal(QFile)
     def __init__(self):
         super().__init__()
         self.__central_widget = QWidget(self)
@@ -46,9 +45,9 @@ class MainWindow(QMainWindow):
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
         
-    @Slot(File)
-    def __on_file_load(self, file: File) -> None:
-        print(file.get_name())
+    @Slot(QFile)
+    def __on_file_load(self, file: QFile) -> None:
+        print(file.fileName())
         self.__editor_area.get_current_editor().set_file(file)
     @Slot()
     def __save_file(self, *a, **K) -> None:
@@ -83,7 +82,7 @@ class MainWindow(QMainWindow):
         self.__splitter.show()
     
     @Slot()
-    def __on_file_edited(self, file: File) -> None:
+    def __on_file_edited(self, file: QFile) -> None:
         self.__attributes_frame.change_item_color(file.get_path(), "green")
 
 def main():
