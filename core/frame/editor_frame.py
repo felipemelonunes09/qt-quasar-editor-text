@@ -12,7 +12,7 @@ class EditorFrame(QFrame):
     clicked     = Signal(QFrame)
     splitted    = Signal(Direction, File, QFrame)
     remove      = Signal(QFrame)
-    edited      = Signal()
+    edited      = Signal(File)
     class CustomPlainTextEdit(QPlainTextEdit):
         key_pressed = Signal() 
         cliked = Signal()
@@ -133,7 +133,7 @@ class EditorFrame(QFrame):
     @Slot()
     def __on_text_changed(self, *args, **kwargs):
         #self.highlight_word()
-        self.edited.emit()
+        self.edited.emit(self.filebar.get_current_file())
         self.filebar.set_current_file_edited()
         
     @Slot(File)

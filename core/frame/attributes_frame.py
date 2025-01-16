@@ -24,7 +24,6 @@ class AttributesFrame(QFrame):
         self.__layout.addWidget(self.file_browser)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
-        
     def set_working_dir(self, path: str) -> None:
         self.path_label.setText(f"<b>{(path if path else os.getcwd()).split("/")[-1].upper()}</b>")
         self.file_browser.set_current_path(path)
@@ -38,5 +37,6 @@ class AttributesFrame(QFrame):
             file = File(filename, path)
             self.load_file.emit(file)
 
-    def change_item_color(self) -> None:
-        print("test")
+    def change_item_color(self, path: str, color: str) -> None:
+        print(path)
+        print(self.file_browser.mapper)

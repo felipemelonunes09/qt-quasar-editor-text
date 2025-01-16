@@ -83,9 +83,8 @@ class MainWindow(QMainWindow):
         self.__splitter.show()
     
     @Slot()
-    def __on_file_edited(self) -> None:
-        print("Change on color")
-        #self.__attributes_frame.change_item_color(Qt)
+    def __on_file_edited(self, file: File) -> None:
+        self.__attributes_frame.change_item_color(file.get_path(), "green")
 
 def main():
     app = QApplication(sys.argv)
