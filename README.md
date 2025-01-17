@@ -1,13 +1,12 @@
 # Quasar-Text-Editor
 
-This repository contains the code for a open-source text-editor coded in python3 with pySide6
+This repository contains the code for a open-source text-editor coded in python3 with pySide6, it was created to be simple and a object of study to write interfaces in python
 
 ## How to Run
 ```python
 python3 main.py
 ```
 
-
-## Features
-- Text Highlight
-- Open source 
+> ## Feature
+> - Text Highlight
+> - Split Screen
