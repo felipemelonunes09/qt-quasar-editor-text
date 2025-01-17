@@ -5,7 +5,7 @@ from core.shared.widgets.FileBar import FileBar
 from core.util.common import distance, Direction
 from PySide6.QtCore import Signal, Slot, Qt, QFile
 from PySide6.QtGui import QKeyEvent
-from typing import Self
+from core.Editor import Editor
 
 class EditorFrame(QFrame):
     clicked     = Signal(QFrame)
@@ -115,7 +115,7 @@ class EditorFrame(QFrame):
                 
     def set_file(self, file: QFile) -> None:
         self.filebar.add_file(file, current=True)
-        self.text_edit.setPlainText(file.readAll().data().decode("utf-8"))
+        self.text_edit.setPlainText(Editor.read_file(file))
         
     def set_blank_file(self) -> None:
         self.filebar.add_file(QFile("Unknow"), current=True)

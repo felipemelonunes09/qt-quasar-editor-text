@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         self.__layout = QVBoxLayout(self.__central_widget)
         self.__menu = MenuManager(self)
         self.setup_initial()
+        
     def setup_initial(self):
         self.__attributes_frame.load_file.connect(self.__on_file_load)
         self.__splitter.setContentsMargins(0, 0, 0, 0)
