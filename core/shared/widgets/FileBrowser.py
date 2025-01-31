@@ -1,7 +1,7 @@
 import os
 import config
 from PySide6.QtWidgets import QSizePolicy, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QLabel
-from PySide6.QtCore import QDir, Qt, QMimeData
+from PySide6.QtCore import QDir, Qt, QMimeData, QFile
 from PySide6.QtGui import QIcon, QDrag, QBrush, QColor
 
 from theme.ThemeManager import ThemeManager
@@ -34,9 +34,10 @@ class FileBrowserWidget(QTreeWidget):
                 dummy_child.setText(0, '')
                 item.addChild(dummy_child)
             else:
-                item.setData(0, Qt.UserRole, (path, entry.fileName()))
+                file = QFile(os.path.join(path, entry.fileName()))
+                item.setData(0, Qt.UserRole, (file, path, entry.fileName()))
                 item.setIcon(0, file_icon)
-                self.mapper[os.path.join(path, entry.fileName())] = item
+                self.mapper[file.fileName()] = item
                 
     def expand_directory(self, item):
         if item.childCount() == 1 and item.child(0).text(0) == '':
@@ -59,7 +60,7 @@ class FileBrowserWidget(QTreeWidget):
     def startDrag(self, supported_actions):
         item = self.currentItem()
         if item:
-            path, name = item.data(0, Qt.UserRole)
+            file, path, name = item.data(0, Qt.UserRole)
             drag = QDrag(self)
             mime_data = QMimeData()
             mime_data.setText(os.path.join(path, name)) 
