@@ -20,7 +20,7 @@ python3 main.py
 ### MacOs
 
 ## Quasar
-Quasar is a language builded in C++
+Quasar is a language builded in C++ with study porpuse, you can access and download the compiler in the following link:
 
 ## Features
 > - Text Highlight
