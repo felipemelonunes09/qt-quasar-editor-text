@@ -13,6 +13,12 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+## Build
+
+### Windows
+
+### MacOs
+
 > ## Feature
 > - Text Highlight
 > - Split Screen
