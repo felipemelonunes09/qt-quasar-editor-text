@@ -68,7 +68,7 @@ class EditorFrame(QFrame):
             e.acceptProposedAction()
             self.setObjectName(None)
             self.style().polish(self)
-            self.dropped.emit(self.__last_drop_direction, QFile(os.path.join(e.mimeData().property("path"), e.mimeData().property("name"))))
+            self.dropped.emit(self.__last_drop_direction, QFile(e.mimeData().property("path")))
             
         def dragLeaveEvent(self, e: QDragLeaveEvent) -> None:
             self.setObjectName(None)
