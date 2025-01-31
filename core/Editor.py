@@ -17,6 +17,10 @@ class Editor():
     
     @staticmethod
     def save_file(file: QFile, content: str) -> None:
+        if getattr(file, "created", False):
+            filename, _ = QFileDialog.getSaveFileName(None, "Save File")
+            file.setFileName(filename)
+
         if file.open(QIODevice.WriteOnly | QIODevice.Text):
             file.write(content.encode("utf-8"))
             file.close()

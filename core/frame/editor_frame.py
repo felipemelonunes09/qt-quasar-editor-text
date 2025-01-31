@@ -118,7 +118,9 @@ class EditorFrame(QFrame):
         self.text_edit.setPlainText(Editor.read_file(file))
         
     def set_blank_file(self) -> None:
-        self.filebar.add_file(QFile("Unknow"), current=True)
+        newfile = QFile("Unknow")
+        setattr(newfile, "created", True)
+        self.filebar.add_file(newfile, current=True)
         self.text_edit.setPlainText("")
         
     def get_current(self) -> tuple[str, QFile | None]:
