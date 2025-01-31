@@ -87,5 +87,5 @@ class FileBar(QFrame):
     
     def __create_tab(self, file: QFile) -> FileTab:
         tab = FileTab(self, file, clickcallback=self.__on_tab_click)
-        tab.x_button.clicked.connect(lambda: self.__on_tab_close(file.readAll().data().decode("utf-8")))
+        tab.x_button.clicked.connect(lambda: self.__on_tab_close(file=file))
         return tab
