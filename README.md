@@ -20,6 +20,7 @@ python3 main.py
 ### MacOs
 
 ## Quasar
+Quasar is a language builded in C++
 
 ## Features
 > - Text Highlight
