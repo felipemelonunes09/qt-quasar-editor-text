@@ -22,7 +22,7 @@ python3 main.py
 ## Quasar
 Quasar is a language builded in C++ with study porpuse, you can access and download the compiler in the following link:
 - [Quasar Compiler](https://github.com/felipemelonunes09/cquasar-compiler)
-
+- [Quasar Doc]()
 ## Features
 > - Text Highlight
 > - Split Screen
