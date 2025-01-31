@@ -55,8 +55,9 @@ class FileBar(QFrame):
     def set_current_file_edited(self):
         if self.__current_file:
             print(f"(+) file {self.__current_file.fileName()} is edited")
-            self.__current_file.set_edited(True)
-            self.__tabs[self.__current_file.get_path()].set_edited()
+            #self.__current_file.set_edited(True)
+            setattr(self.__current_file, "edited", True)
+            self.__tabs[self.__current_file.fileName()].set_edited()
     
     @Slot(QFile)
     def on_file_saved(self, file: QFile):
