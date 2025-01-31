@@ -21,7 +21,7 @@ python3 main.py
 
 ## Quasar
 
-> ## Feature
+> ## Features
 > - Text Highlight
 > - Split Screen
 > - Attributes Highlights
