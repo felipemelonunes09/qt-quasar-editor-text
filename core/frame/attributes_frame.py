@@ -33,7 +33,7 @@ class AttributesFrame(QFrame):
         if data:
             path, filename = data
             path = os.path.join(path, filename)
-            file = QFile(os.path.join(path, filename))
+            file = QFile(path)
             self.load_file.emit(file)
 
     def change_item_color(self, path: str, color: str) -> None:
