@@ -31,11 +31,12 @@ class AttributesFrame(QFrame):
     def atrribute_cliked(self, item) -> None:
         data = item.data(0, Qt.UserRole)
         if data:
-            path, filename = data
+            ## WIP: for future change do not recreate file, move the all file new isntance for FileBroserWidget (use _file)
+            _file, path, filename = data
             path = os.path.join(path, filename)
             file = QFile(path)
             self.load_file.emit(file)
 
-    def change_item_color(self, path: str, color: str) -> None:
-        print(path)
+    def change_item_color(self, file: QFile, color: str) -> None:
         print(self.file_browser.mapper)
+        print(self.file_browser.mapper[file.fileName()])
