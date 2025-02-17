@@ -1,14 +1,13 @@
 from typing import Callable
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QFile, QFileInfo
 from PySide6.QtGui import QMouseEvent
-from core.file_objects import File
 from PySide6.QtWidgets import QFrame, QWidget, QHBoxLayout, QLabel, QPushButton
 
 class FileTab(QFrame):
-    def __init__(self, parent: QWidget, file: File, clickcallback: Callable) -> None:
+    def __init__(self, parent: QWidget, file: QFile, clickcallback: Callable) -> None:
         super().__init__(parent)
         self.__layout = QHBoxLayout(self)
-        self.label = QLabel(file.get_name())
+        self.label = QLabel(QFileInfo(file).fileName())
         self.x_button = QPushButton("X")
         self.__file = file
         self.__layout.addWidget(self.label)
