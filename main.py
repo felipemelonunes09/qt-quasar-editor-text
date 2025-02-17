@@ -10,6 +10,7 @@ from core.MenuManager import MenuManager
 from core.frame.area_editor_frame import AreaEditorFrame    
 from theme.ThemeManager import ThemeManager
 
+
 class MainWindow(QMainWindow): 
     file_saved = Signal(QFile)
     def __init__(self):
@@ -54,7 +55,9 @@ class MainWindow(QMainWindow):
     def __save_file(self, *a, **K) -> None:
         content, file = self.__editor_area.get_current_editor().get_current()
         self.__editor.save_file(file, content)
+        self.__on_file_saved(file)
         self.file_saved.emit(file)
+        
     
     @Slot()
     def __open_file(self, *a, **k) -> None:
@@ -84,7 +87,11 @@ class MainWindow(QMainWindow):
     
     @Slot()
     def __on_file_edited(self, file: QFile) -> None:
-        self.__attributes_frame.change_item_color(file.get_path(), "green")
+        self.__attributes_frame.change_item_color(file, "lightgreen")
+
+    @Slot()
+    def __on_file_saved(self, file: QFile) -> None:
+        self.__attributes_frame.change_item_color(file, "white")
 
 def main():
     app = QApplication(sys.argv)
