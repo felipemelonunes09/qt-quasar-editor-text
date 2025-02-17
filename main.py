@@ -8,8 +8,8 @@ from core.frame.initial_frame import InitialFrame
 from core.Editor import Editor
 from core.MenuManager import MenuManager
 from core.frame.area_editor_frame import AreaEditorFrame    
+from core.frame.default_frame import DefaultFrame
 from theme.ThemeManager import ThemeManager
-
 
 class MainWindow(QMainWindow): 
     file_saved = Signal(QFile)
@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         self.__attributes_frame = AttributesFrame(self.__splitter)
         self.__initial_frame = InitialFrame(self.__splitter)
         self.__editor_area = AreaEditorFrame(self.__splitter)
+        self.__default_frame = DefaultFrame(self.__splitter)
         self.__layout = QVBoxLayout(self.__central_widget)
         self.__menu = MenuManager(self)
         self.setup_initial()
@@ -39,11 +40,13 @@ class MainWindow(QMainWindow):
         self.__theme_manager.apply_theme(config.theme, self)
         self.__splitter.addWidget(self.__attributes_frame)
         self.__splitter.addWidget(self.__editor_area)
+        self.__splitter.addWidget(self.__default_frame)
         self.__splitter.setSizes(config.splitter_size)
         self.__splitter.hide()
         self.__save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         self.__save_shortcut.activated.connect(self.__save_file)
         self.__editor_area.file_edited.connect(self.__on_file_edited)
+        self.__editor_area.editor_removed.connect(self.__on_editor_removed)
         self.file_saved.connect(self.__editor_area.update_file_saved)
         self.setCentralWidget(self.__central_widget)
         
@@ -56,8 +59,7 @@ class MainWindow(QMainWindow):
         content, file = self.__editor_area.get_current_editor().get_current()
         self.__editor.save_file(file, content)
         self.__on_file_saved(file)
-        self.file_saved.emit(file)
-        
+        self.file_saved.emit(file)    
     
     @Slot()
     def __open_file(self, *a, **k) -> None:
@@ -88,6 +90,12 @@ class MainWindow(QMainWindow):
     @Slot()
     def __on_file_edited(self, file: QFile) -> None:
         self.__attributes_frame.change_item_color(file, "lightgreen")
+
+    @Slot()
+    def __on_editor_removed(self) -> None:
+        if self.__editor_area.len_editor_list() == 1:
+            self.__editor_area.hide()
+            self.__default_frame.show()
 
     @Slot()
     def __on_file_saved(self, file: QFile) -> None:
