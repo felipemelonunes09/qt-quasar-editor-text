@@ -9,6 +9,7 @@ from core.util.debug import dprint
 
 class AreaEditorFrame(QFrame):
     file_edited = Signal(QFile)
+    editor_removed = Signal()
     class AreaNode():
         def __init__(self, leaves: list, orientation: int, frame: EditorFrame = None, parent: Self=None) -> None:
             self.leaves: list[Self] = leaves
@@ -53,7 +54,10 @@ class AreaEditorFrame(QFrame):
         self.__area_layout = self.__build_area(self.__area_tree, self.__area_widget)
         self.__area_widget.setLayout(self.__area_layout)
         self.__layout.addWidget(self.__area_widget)
-        
+
+    def len_editor_list(self) -> int:
+        return len(self.__editor_list)
+
     def get_current_editor(self) -> EditorFrame:
         return self.__current_editor
     
@@ -134,6 +138,7 @@ class AreaEditorFrame(QFrame):
                 self.__editor_list.remove(editor)
                 self.build_area()
         dprint(f"\t(*) --editor-len: {len(self.__editor_list)}")
+        self.editor_removed.emit()
                 
     def __print(self) -> None:
         def __print_node(node: AreaEditorFrame.AreaNode, level: int) -> None:
