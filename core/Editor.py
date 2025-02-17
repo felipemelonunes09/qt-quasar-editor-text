@@ -31,3 +31,6 @@ class Editor():
             content = file.readAll().data().decode("utf-8")
             file.close()
             return content
+        else:
+            print(file.fileName())
+            print(file.errorString())
