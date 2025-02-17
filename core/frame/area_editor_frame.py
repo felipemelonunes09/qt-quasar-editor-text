@@ -5,6 +5,8 @@ from core.frame.editor_frame import EditorFrame
 from core.util.common import Direction
 from typing import Self
 
+from core.util.debug import dprint
+
 class AreaEditorFrame(QFrame):
     file_edited = Signal(QFile)
     class AreaNode():
@@ -44,6 +46,7 @@ class AreaEditorFrame(QFrame):
         self.build_area()
         
     def build_area(self) -> None:
+        dprint(f"(+) Building new area for {self}")
         if self.__area_widget:
             self.__area_widget.deleteLater()
         self.__area_widget = QFrame(self) 
@@ -122,12 +125,15 @@ class AreaEditorFrame(QFrame):
             self.build_area()
     
     def __on_remove(self, editor: QFrame): 
+        dprint("(+) Removing editor frame")
         __area_node__: AreaEditorFrame.AreaNode = getattr(editor, "__area_node__")
         if __area_node__:
             parent = __area_node__.get_parent()
             if parent:
                 parent.leaves.remove(__area_node__)
+                self.__editor_list.remove(editor)
                 self.build_area()
+        dprint(f"\t(*) --editor-len: {len(self.__editor_list)}")
                 
     def __print(self) -> None:
         def __print_node(node: AreaEditorFrame.AreaNode, level: int) -> None:
