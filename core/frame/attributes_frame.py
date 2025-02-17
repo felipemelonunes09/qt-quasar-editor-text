@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QFrame, QSizePolicy, QVBoxLayout, QLabel
 from core.frame.editor_frame import EditorFrame
 from core.shared.widgets.FileBrowser import FileBrowserWidget
 from PySide6.QtCore import Slot, Qt, Signal, QFile
+from PySide6.QtGui import QColor
 import os
 
 class AttributesFrame(QFrame):
@@ -38,5 +39,4 @@ class AttributesFrame(QFrame):
             self.load_file.emit(file)
 
     def change_item_color(self, file: QFile, color: str) -> None:
-        print(self.file_browser.mapper)
-        print(self.file_browser.mapper[file.fileName()])
+        self.file_browser.mapper[file.fileName()].setForeground(0, QColor(color))
